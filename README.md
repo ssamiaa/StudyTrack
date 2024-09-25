@@ -21,10 +21,10 @@ This project is interesting to me because it addresses a common problem students
 - **Remove Courses/Topics**: Users can remove a course or topic if they no longer need it, keeping their tracker organized.
 
 ### User Stories:
-As a user, I want to be able to add a new course to my list of courses so that I can begin tracking my progress for that course.
-As a user, I want to be able to add topics or lectures to a specific course with lesson objectives, so that I can break down my studies into manageable units.
-As a user, I want to assign multiple lesson objectives to each topic so that I can specify what I need to learn in each lecture or unit.
-As a user, I want to be able to mark which lesson objectives I am confident in, and have the app calculate my confidence level as a percentage of objectives mastered for each topic.
-As a user, I want to view an overview of my progress in each course so that I can quickly see which topics need more focus.
-As a user, I want to be able to update or modify the details of a course (like its name or objectives) so that I can keep the information current and relevant.
-As a user, I want to be able to remove a course or topic from my list if I no longer need it so that my study tracker stays organized.
+- As a user, I want to be able to add a new course to my list of courses so that I can begin tracking my progress for that course.
+- As a user, I want to be able to add topics or lectures to a specific course with lesson objectives, so that I can break down my studies into manageable units.
+- As a user, I want to assign multiple lesson objectives to each topic so that I can specify what I need to learn in each lecture or unit.
+- As a user, I want to be able to mark which lesson objectives I am confident in, and have the app calculate my confidence level as a percentage of objectives mastered for each topic.
+- As a user, I want to view an overview of my progress in each course so that I can quickly see which topics need more focus.
+- As a user, I want to be able to update or modify the details of a course (like its name or objectives) so that I can keep the information current and relevant.
+- As a user, I want to be able to remove a course or topic from my list if I no longer need it so that my study tracker stays organized.
