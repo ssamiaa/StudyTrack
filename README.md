@@ -13,12 +13,12 @@ The application is designed primarily for students who want to stay organized an
 This project is interesting to me because it addresses a common problem students face: managing and organizing their study progress. By creating StudyTrack, I aim to help students prioritize their study time efficiently, track their improvement, and ultimately perform better in their exams. Moreover, it provides me with an opportunity to design a functional application that tackles real-world challenges, allowing me to apply my Java skills in an impactful way.
 
 ### Features:
-**Add Courses**: Users can create and manage multiple courses.
-**Add Topics**: For each course, users can list topics, assign multiple lesson objectives, and update their progress by marking objectives as mastered.
-**Track Progress**: Confidence levels for each topic are tracked based on how many objectives the user has mastered, showing progress as a percentage (e.g., 4 out of 5 objectives = 80% confident).
-**View Overview**: Users can view an easy-to-read progress report of all topics within a course and see how many objectives they’ve mastered.
-**Edit Course/Topic:** Users can update course or topic information as needed, including modifying lesson objectives and progress.
-**Remove Courses/Topics**: Users can remove a course or topic if they no longer need it, keeping their tracker organized.
+- **Add Courses**: Users can create and manage multiple courses.
+- **Add Topics**: For each course, users can list topics, assign multiple lesson objectives, and update their progress by marking objectives as mastered.
+- **Track Progress**: Confidence levels for each topic are tracked based on how many objectives the user has mastered, showing progress as a percentage (e.g., 4 out of 5 objectives = 80% confident).
+- **View Overview**: Users can view an easy-to-read progress report of all topics within a course and see how many objectives they’ve mastered.
+- **Edit Course/Topic:** Users can update course or topic information as needed, including modifying lesson objectives and progress.
+- **Remove Courses/Topics**: Users can remove a course or topic if they no longer need it, keeping their tracker organized.
 
 ### User Stories:
 As a user, I want to be able to add a new course to my list of courses so that I can begin tracking my progress for that course.
