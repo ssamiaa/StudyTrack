@@ -73,13 +73,13 @@ public class CourseTest {
 
     @Test
     public void testToString() {
-        String expectedInitial = "Biology 111 (0.00% overall progress)";
+        String expectedInitial = "Biology 111 (0.0% overall progress)";
         assertEquals(expectedInitial, course.toString());
 
         
         cells.addLessonObjective("Define cell");
         cells.markObjectiveAsMastered(0);
-        String expectedAfterProgress = "Biology 111 (50.00% overall progress)";
+        String expectedAfterProgress = "Biology 111 (50.0% overall progress)";
         assertEquals(expectedAfterProgress, course.toString());
     }
 }
