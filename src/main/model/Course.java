@@ -38,9 +38,9 @@ public class Course {
     // REQUIRES: topicName exists in the course.
     // MODIFIES: this
     // EFFECTS: Removes the Topic with the specified name from the topics list.
-    public void removeTopic(String string) {
+    public void removeTopic(String topicName) {
         for (int i = 0; i < topics.size(); i++) {
-            if (topics.get(i).getName()) {
+            if (topics.get(i).getName().equalsIgnoreCase(topicName)) {
             topics.remove(i);
             i--; // Adjust index after removal
             }
