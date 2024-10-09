@@ -14,6 +14,8 @@ public class Course {
     // REQUIRES: name is a non-empty string.
     // EFFECTS: Initializes the course with the provided name and an empty list of topics.
     public Course(String name) {
+        this.name = name;
+        this.topics = new ArrayList<>();
       
     }
 
@@ -28,32 +30,48 @@ public class Course {
     // MODIFIES: this
     // EFFECTS: Adds a new Topic with the given name to the topics list.
     public void addTopic(String topicName) {
+        Topic topic = new Topic(topicName);
+        topics.add(topic);
     }
 
     // Removes a topic from the course.
     // REQUIRES: topicName exists in the course.
     // MODIFIES: this
     // EFFECTS: Removes the Topic with the specified name from the topics list.
-    public void removeTopic(String topicName) {
-        
+    public void removeTopic(String string) {
+        for (int i = 0; i < topics.size(); i++) {
+            if (topics.get(i).getName()) {
+            topics.remove(i);
+            i--; // Adjust index after removal
+            }
+        }
     }
 
-
+        
     // Returns the list of topics in the course.
     public List<Topic> getTopics() {
-        return new ArrayList<>(topics);
+        return new ArrayList<>(topics); 
     }
 
     // Returns the overall progress for the course.
     public double getOverallProgress() {
-        return 0.0;
+        if (topics.isEmpty()) {
+            return 0.0;
+        }
+    
+        double totalConfidence = 0.0;
+        for (int i = 0; i < topics.size(); i++) {
+            totalConfidence += topics.get(i).getConfidenceLevel();
+        }
         
+        return totalConfidence / topics.size();
     }
 
     // Returns a string representation of the course, including overall progress.
     @Override
-    public String toString() {
-        return name;
+    public String toString() {  
+        double overallProgress = getOverallProgress();
+        return name + " (" + ((int) (overallProgress * 100)) / 100.0 + "% overall progress)";
     }
 }
 
