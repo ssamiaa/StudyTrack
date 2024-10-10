@@ -16,6 +16,9 @@ public class Topic {
      * EFFECTS: Initializes the topic with the provided name and an empty list of lesson objectives.
      */
     public Topic(String name) {
+        this.name = name;
+        this.lessonObjectives = new ArrayList<>();
+        this.confidenceLevel = 0.0;
     }
 
     /**
@@ -32,6 +35,9 @@ public class Topic {
      * EFFECTS: Adds a new LessonObjective with the given description to the lessonObjectives list and updates confidence level.
      */
     public void addLessonObjective(String objectiveDescription) {
+        LessonObjective objective = new LessonObjective(objectiveDescription);
+        lessonObjectives.add(objective);
+        updateConfidenceLevel();
     
     }
 
@@ -42,6 +48,8 @@ public class Topic {
      * EFFECTS: Marks the lesson objective at the specified index as mastered and updates confidence level.
      */
     public void markObjectiveAsMastered(int index) {
+        lessonObjectives.get(index).markAsMastered();
+        updateConfidenceLevel();
     
     }
 
@@ -52,7 +60,10 @@ public class Topic {
      * EFFECTS: Unmarks the lesson objective at the specified index as mastered and updates confidence level.
      */
     public void unmarkObjectiveAsMastered(int index) {
+        lessonObjectives.get(index).unmarkAsMastered();
+        updateConfidenceLevel();
     }
+    
 
     /**
      * Returns the list of lesson objectives.
@@ -75,6 +86,19 @@ public class Topic {
      * EFFECTS: Calculates and updates the confidence level as the percentage of mastered objectives.
      */
     private void updateConfidenceLevel() {
+        if (lessonObjectives.isEmpty()) {
+            confidenceLevel = 0.0;
+            return;
+        }
+        
+        int masteredCount = 0;
+        for (LessonObjective objective : lessonObjectives) {
+            if (objective.isMastered()) {
+                masteredCount++;
+            }
+        }
+        
+        confidenceLevel = ((double) masteredCount / lessonObjectives.size()) * 100.0;
     }
 
     /**
@@ -82,6 +106,7 @@ public class Topic {
      */
     @Override
     public String toString() {
-        return name;
+        return name + " (" + ((int) (confidenceLevel * 100)) / 100.0 + "% confident)";
     }
 }
+
