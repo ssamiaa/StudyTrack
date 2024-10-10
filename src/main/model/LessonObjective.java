@@ -5,40 +5,52 @@ public class LessonObjective {
     private String description;
     private boolean isMastered;
 
-    // Constructs a LessonObjective with the given description.
-    // REQUIRES: description is a non-empty string.
-    // EFFECTS: Initializes the lesson objective with the provided description and sets isMastered to false.
+    /* 
+     * REQUIRES: description is a non-empty string.
+     * EFFECTS: Initializes the lesson objective with the provided description and sets isMastered to false.
+    */
     public LessonObjective(String description) {
         this.description = description;
         this.isMastered = false;
     }
-
-    // Returns the description of the lesson objective.
+    /* 
+     * EFFECTS: Returns the description of the lesson objective. 
+    */
     public String getDescription() {
         return description;
     }
-
-    // Checks if the lesson objective is mastered.
+    /* 
+     * EFFECTS: Checks if the lesson objective is mastered.
+    */
     public boolean isMastered() {
         return isMastered;
     }
 
-    
-    // Marks the lesson objective as mastered.
-    // MODIFIES: this
-    // EFFECTS: Sets isMastered to true.
+    /* 
+     * MODIFIES: this
+     * EFFECTS: Returns the description of the lesson objective. 
+     * Marks the lesson objective as mastered.Sets isMastered to true.
+     * 
+    */
     public void markAsMastered() {
         this.isMastered = true;
     }
 
-    // Unmarks the lesson objective as mastered.
-    // MODIFIES: this
-    // EFFECTS: Sets isMastered to false.
+    /* 
+     * MODIFIES: this
+     * EFFECTS: Unmarks the lesson objective as mastered. Sets isMastered to false.
+     * 
+    */
     public void unmarkAsMastered() {
         this.isMastered = false;
     }
-
-    // Returns a string representation of the lesson objective.
+    
+    /* 
+     * MODIFIES: this
+     * EFFECTS: Returns a string representation of the lesson objective.
+     * Unmarks the lesson objective as mastered. Sets isMastered to false.
+     * 
+    */
     @Override
     public String toString() {
         String masteryStatus = " [Not Mastered]";
