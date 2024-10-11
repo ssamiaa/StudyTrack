@@ -7,12 +7,14 @@ import java.util.List;
 
 public class CourseTest {
     private Course course;
+    private Course emptycourse;
     private Topic cells;
     private Topic genetics;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         course = new Course("Biology 111");
+        emptycourse = new Course("Math 101");
         course.addTopic("Cells");
         course.addTopic("Genetics");
         List<Topic> topics = course.getTopics();
@@ -21,7 +23,7 @@ public class CourseTest {
     }
 
     @Test
-    public void testInitialState() {
+    void testInitialState() {
         assertEquals("Biology 111", course.getName());
         List<Topic> topics = course.getTopics();
         assertEquals(2, topics.size());
@@ -29,7 +31,7 @@ public class CourseTest {
     }
 
     @Test
-    public void testAddTopic() {
+    void testAddTopic() {
         course.addTopic("Ecology");
         List<Topic> topics = course.getTopics();
         assertEquals(3, topics.size());
@@ -38,7 +40,7 @@ public class CourseTest {
     }
 
     @Test
-    public void testRemoveTopic() {
+    void testRemoveTopic() {
         course.removeTopic("Cells");
         List<Topic> topics = course.getTopics();
         assertEquals(1, topics.size());
@@ -47,7 +49,9 @@ public class CourseTest {
     }
 
     @Test
-    public void testOverallProgressSingleTopic() {
+    void testOverallProgressSingleTopic() {
+
+        assertEquals(0.0, emptycourse.getOverallProgress());
         cells.addLessonObjective("Define cell");
         cells.markObjectiveAsMastered(0);
         double expectedProgress = (100.0 + 0.0) / 2.0; 
@@ -55,7 +59,7 @@ public class CourseTest {
     }
 
     @Test
-    public void testOverallProgressMultipleTopics() {
+    void testOverallProgressMultipleTopics() {
         
         cells.addLessonObjective("Define cell");
         cells.markObjectiveAsMastered(0);
@@ -72,7 +76,7 @@ public class CourseTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         String expectedInitial = "Biology 111 (0.0% overall progress)";
         assertEquals(expectedInitial, course.toString());
 
