@@ -7,24 +7,24 @@ public class LessonObjectiveTest {
     private LessonObjective lessonObjective;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         lessonObjective = new LessonObjective("Understand photosynthesis");
     }
 
     @Test
-    public void testInitialState() {
+    void testInitialState() {
         assertEquals("Understand photosynthesis", lessonObjective.getDescription());
         assertFalse(lessonObjective.isMastered());
     }
 
     @Test
-    public void testMarkAsMastered() {
+    void testMarkAsMastered() {
         lessonObjective.markAsMastered();
         assertTrue(lessonObjective.isMastered());
     }
 
     @Test
-    public void testUnmarkAsMastered() {
+    void testUnmarkAsMastered() {
         lessonObjective.markAsMastered();
         assertTrue(lessonObjective.isMastered());
         lessonObjective.unmarkAsMastered();
@@ -32,13 +32,13 @@ public class LessonObjectiveTest {
     }
 
     @Test
-    public void testToStringNotMastered() {
+    void testToStringNotMastered() {
         String expected = "Understand photosynthesis [Not Mastered]";
         assertEquals(expected, lessonObjective.toString());
     }
 
     @Test
-    public void testToStringMastered() {
+    void testToStringMastered() {
         lessonObjective.markAsMastered();
         String expected = "Understand photosynthesis [Mastered]";
         assertEquals(expected, lessonObjective.toString());
