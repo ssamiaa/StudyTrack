@@ -86,11 +86,7 @@ public class Topic {
      * EFFECTS: Calculates and updates the confidence level as the percentage of mastered objectives.
      */
     private void updateConfidenceLevel() {
-        if (lessonObjectives.isEmpty()) {
-            confidenceLevel = 0.0;
-            return;
-        }
-        
+
         int masteredCount = 0;
         for (LessonObjective objective : lessonObjectives) {
             if (objective.isMastered()) {
