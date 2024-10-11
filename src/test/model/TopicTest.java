@@ -11,12 +11,12 @@ public class TopicTest {
     private Topic topic;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         topic = new Topic("Photosynthesis");
     }
 
     @Test
-    public void testInitialState() {
+    void testInitialState() {
         assertEquals("Photosynthesis", topic.getName());
         List<LessonObjective> objectives = topic.getLessonObjectives();
         assertTrue(objectives.isEmpty());
@@ -24,7 +24,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testAddLessonObjective() {
+    void testAddLessonObjective() {
         topic.addLessonObjective("Define photosynthesis");
         List<LessonObjective> objectives = topic.getLessonObjectives();
         assertEquals(1, objectives.size());
@@ -34,7 +34,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testMarkObjectiveAsMastered() {
+    void testMarkObjectiveAsMastered() {
         topic.addLessonObjective("Define photosynthesis");
         topic.markObjectiveAsMastered(0);
         assertTrue(topic.getLessonObjectives().get(0).isMastered());
@@ -42,7 +42,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testUnmarkObjectiveAsMastered() {
+    void testUnmarkObjectiveAsMastered() {
         topic.addLessonObjective("Define photosynthesis");
         topic.markObjectiveAsMastered(0);
         assertTrue(topic.getLessonObjectives().get(0).isMastered());
@@ -52,7 +52,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testConfidenceLevelMultipleObjectives() {
+    void testConfidenceLevelMultipleObjectives() {
         topic.addLessonObjective("Define photosynthesis");
         topic.addLessonObjective("Explain the light-dependent reactions");
         topic.addLessonObjective("Describe the Calvin cycle");
@@ -64,7 +64,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         String expectedInitial = "Photosynthesis (0.0% confident)";
         assertEquals(expectedInitial, topic.toString());
 
