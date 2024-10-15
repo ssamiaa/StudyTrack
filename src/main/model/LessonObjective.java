@@ -13,12 +13,14 @@ public class LessonObjective {
         this.description = description;
         this.isMastered = false;
     }
+
     /* 
      * EFFECTS: Returns the description of the lesson objective. 
     */
     public String getDescription() {
         return description;
     }
+    
     /* 
      * EFFECTS: Checks if the lesson objective is mastered.
     */

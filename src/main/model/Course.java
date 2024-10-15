@@ -41,8 +41,8 @@ public class Course {
     public void removeTopic(String topicName) {
         for (int i = 0; i < topics.size(); i++) {
             if (topics.get(i).getName().equalsIgnoreCase(topicName)) {
-            topics.remove(i);
-            i--; // Adjust index after removal
+                topics.remove(i);
+                i--; // Adjust index after removal
             }
         }
     }

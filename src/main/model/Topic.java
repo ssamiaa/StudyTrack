@@ -32,7 +32,9 @@ public class Topic {
      *
      * REQUIRES: objectiveDescription is a non-empty string.
      * MODIFIES: this
-     * EFFECTS: Adds a new LessonObjective with the given description to the lessonObjectives list and updates confidence level.
+     * EFFECTS: Adds a new LessonObjective with the given
+     *  description to the lessonObjectives list 
+     *  and updates confidence level.
      */
     public void addLessonObjective(String objectiveDescription) {
         LessonObjective objective = new LessonObjective(objectiveDescription);
