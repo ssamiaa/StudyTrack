@@ -3,10 +3,15 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import persistence.Writable;
+
 /**
  * Represents a topic within a course, containing multiple lesson objectives.
  */
-public class Topic {
+public class Topic implements Writable{
     private String name;
     private List<LessonObjective> lessonObjectives;
     private double confidenceLevel; // percentage of mastered objectives
@@ -106,5 +111,21 @@ public class Topic {
     public String toString() {
         return name + " (" + ((int) (confidenceLevel * 100)) / 100.0 + "% confident)";
     }
+
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+
+        JSONArray jsonObjectives = new JSONArray();
+        for (LessonObjective objective : lessonObjectives) {
+            jsonObjectives.put(objective.toJson());  // Add each lesson objective as a JSON object
+        }
+        json.put("lessonObjectives", jsonObjectives);  // Add the array of objectives
+
+        return json;
+    }
+
 }
 

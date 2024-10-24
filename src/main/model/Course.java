@@ -3,10 +3,15 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import persistence.Writable;
+
 /**
  * Represents a course containing multiple topics.
  */
-public class Course {
+public class Course implements Writable{
     private String name;
     private List<Topic> topics;
    
@@ -73,5 +78,20 @@ public class Course {
         double overallProgress = getOverallProgress();
         return name + " (" + ((int) (overallProgress * 100)) / 100.0 + "% overall progress)";
     }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+
+        JSONArray jsonTopics = new JSONArray();
+        for (Topic topic : topics) {
+            jsonTopics.put(topic.toJson());  // Add each topic as a JSON object
+        }
+        json.put("topics", jsonTopics);  // Add the array of topics to the course JSON
+
+        return json;
+    }
+
 }
 

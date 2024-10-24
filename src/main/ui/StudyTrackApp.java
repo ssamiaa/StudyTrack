@@ -3,8 +3,11 @@ package ui;
 import model.Course;
 import model.LessonObjective;
 import model.Topic;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
-
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -49,6 +52,12 @@ public class StudyTrackApp {
                     deleteCourse();
                     break;
                 case 6:
+                    saveProgress();   // Call save progress method
+                    break;
+                case 7:
+                    loadProgress();   // Call load progress method
+                    break;
+                case 8:
                     System.out.println("Goodbye!");
                     exit = true;
                     break;
@@ -58,6 +67,7 @@ public class StudyTrackApp {
         }
         scanner.close();
     }
+    
 
     /**
      * EFFECTS: Displays the main menu options to the user.
@@ -69,7 +79,9 @@ public class StudyTrackApp {
         System.out.println("3. Add more topics to a course");
         System.out.println("4. Delete a topic");
         System.out.println("5. Delete a course");
-        System.out.println("6. Exit");
+        System.out.println("6. Save progress");
+        System.out.println("7. Load progress");
+        System.out.println("8. Exit");
         System.out.print("Enter your choice: ");
     }
 
@@ -294,6 +306,30 @@ public class StudyTrackApp {
         int choice = getChoiceInRange(1, topics.size());
         return topics.get(choice - 1);
     }
+
+    private void saveProgress() {
+        JsonWriter writer = new JsonWriter("./data/studyTrack.json");
+        try {
+            writer.open();
+            writer.write(courses);  // Save the current list of courses
+            writer.close();
+            System.out.println("Progress saved successfully.");
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to save progress: " + e.getMessage());
+        }
+    }
+
+    private void loadProgress() {
+    JsonReader reader = new JsonReader("./data/studyTrack.json");
+    try {
+        courses = reader.read();  // Load the list of courses
+        System.out.println("Progress loaded successfully.");
+    } catch (IOException e) {
+        System.out.println("Unable to load progress: " + e.getMessage());
+    }
+}
+
+
 
     /**
      * EFFECTS: Retrieves a positive integer input from the user.
