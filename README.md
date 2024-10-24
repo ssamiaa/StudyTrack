@@ -25,6 +25,8 @@ This project is interesting to me because it addresses a common problem students
 - As a user, I want to be able to add topics or lectures to a specific course with lesson objectives, so that I can break down my studies into manageable units.
 - As a user, I want to assign multiple lesson objectives to each topic so that I can specify what I need to learn in each lecture or unit.
 - As a user, I want to be able to mark which lesson objectives I am confident in, and have the app calculate my confidence level as a percentage of objectives mastered for each topic.
-- As a user, I want to view an overview of my progress in each course so that I can quickly see which topics need more focus.
 - As a user, I want to be able to update or modify the details of a course (like its name or objectives) so that I can keep the information current and relevant.
 - As a user, I want to be able to remove a course or topic from my list if I no longer need it so that my study tracker stays organized.
+- As a user, I want to view all my courses, along with their associated topics, lesson objectives, and progress in one place, so that I can easily assess my learning progress and see what areas I need to focus on.
+- As a user, I want to save my course progress, including topics and lesson objectives, so that I can continue my work later without losing any of my tracked progress.
+- as a user, As a student, I want to load my previously saved course progress so that I can resume where I left off without having to re-enter any information.
