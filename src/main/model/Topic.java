@@ -92,17 +92,25 @@ public class Topic implements Writable{
      * MODIFIES: this
      * EFFECTS: Calculates and updates the confidence level as the percentage of mastered objectives.
      */
-    private void updateConfidenceLevel() {
-
+    public void updateConfidenceLevel() {
+        if (lessonObjectives.isEmpty()) {
+            confidenceLevel = 0.0;  
+            return;
+        }
+    
         int masteredCount = 0;
         for (LessonObjective objective : lessonObjectives) {
             if (objective.isMastered()) {
                 masteredCount++;
             }
         }
-        
+    
+        // Confidence level is calculated as the percentage of mastered objectives
         confidenceLevel = ((double) masteredCount / lessonObjectives.size()) * 100.0;
     }
+
+    
+    
 
     /**
      * EFFECTS: Returns a string representation of the topic, including confidence level.
@@ -111,21 +119,28 @@ public class Topic implements Writable{
     public String toString() {
         return name + " (" + ((int) (confidenceLevel * 100)) / 100.0 + "% confident)";
     }
+    
+    public void setConfidenceLevel(double confidenceLevel) {
+        this.confidenceLevel = confidenceLevel;
+    }
+    
 
 
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("name", name);
+        json.put("name", name);  // Topic name
+        json.put("confidenceLevel", confidenceLevel);  
 
-        JSONArray jsonObjectives = new JSONArray();
+        JSONArray jsonLessonObjectives = new JSONArray();
         for (LessonObjective objective : lessonObjectives) {
-            jsonObjectives.put(objective.toJson());  // Add each lesson objective as a JSON object
+            jsonLessonObjectives.put(objective.toJson());  
         }
-        json.put("lessonObjectives", jsonObjectives);  // Add the array of objectives
-
+        json.put("lessonObjectives", jsonLessonObjectives);  
         return json;
     }
 
+
 }
+
 

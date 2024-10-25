@@ -62,33 +62,44 @@ public class JsonReader {
             JSONObject jsonTopic = (JSONObject) obj;
             Topic topic = parseTopic(jsonTopic);
     
-            // Get the name from the parsed Topic and add it using the existing method
-            course.addTopic(topic.getName());  // Using getName() to pass a String
+            
+            course.addTopicObject(topic);  
         }
     
         return course;
     }
+    
     
 
     // EFFECTS: parses a topic from JSON object and returns it
     private Topic parseTopic(JSONObject jsonObject) {
         String name = jsonObject.getString("name");
         Topic topic = new Topic(name);
+    
         JSONArray objectivesArray = jsonObject.getJSONArray("lessonObjectives");
-    
-        for (Object obj : objectivesArray) {
-            JSONObject jsonObjective = (JSONObject) obj;
+        for (int i = 0; i < objectivesArray.length(); i++) {
+            JSONObject jsonObjective = objectivesArray.getJSONObject(i);
             LessonObjective lessonObjective = parseLessonObjective(jsonObjective);
+            
+            // Add the parsed lesson objective to the topic
+            topic.addLessonObjective(lessonObjective.getDescription());
     
-            // Use the description to add the lesson objective to the topic
-            topic.addLessonObjective(lessonObjective.getDescription());  // Using getDescription() to pass a String
+            // If mastered, mark it accordingly
+            if (lessonObjective.isMastered()) {
+                topic.markObjectiveAsMastered(i);  
+            }
+        }
+    
+        // Load confidence level from the JSON
+        if (jsonObject.has("confidenceLevel")) {
+            double confidenceLevel = jsonObject.getDouble("confidenceLevel");
+            topic.setConfidenceLevel(confidenceLevel);
         }
     
         return topic;
     }
     
 
-    // EFFECTS: parses a lesson objective from JSON object and returns it
     private LessonObjective parseLessonObjective(JSONObject jsonObject) {
         String description = jsonObject.getString("description");
         boolean isMastered = jsonObject.getBoolean("isMastered");
@@ -100,4 +111,5 @@ public class JsonReader {
 
         return objective;
     }
+        
 }

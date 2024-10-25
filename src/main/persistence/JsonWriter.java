@@ -25,12 +25,15 @@ public class JsonWriter {
     // MODIFIES: this
     // EFFECTS: writes JSON representation of the courses list to file
     public void write(List<Course> courses) {
-        JSONArray jsonArray = new JSONArray();
+        JSONArray jsonCourses = new JSONArray();
+    
         for (Course course : courses) {
-            jsonArray.put(course.toJson());
+            jsonCourses.put(course.toJson());  // Convert each course to JSON
         }
-        saveToFile(jsonArray.toString(TAB));
+    
+        saveToFile(jsonCourses.toString(4));  // Write the JSON to file with indentation
     }
+    
 
     // MODIFIES: this
     // EFFECTS: closes writer

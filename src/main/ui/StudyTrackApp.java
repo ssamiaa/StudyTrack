@@ -153,14 +153,18 @@ public class StudyTrackApp {
             return;
         }
         Course course = selectCourse();
-        if (course == null) return;
+        if (course == null) {
+            return;
+        }
 
         if (course.getTopics().isEmpty()) {
             System.out.println("No topics available in this course to update.");
             return;
         }
         Topic topic = selectTopic(course);
-        if (topic == null) return;
+        if (topic == null) {
+            return;
+        }
 
         List<LessonObjective> objectives = topic.getLessonObjectives();
         if (objectives.isEmpty()) {
@@ -202,7 +206,9 @@ public class StudyTrackApp {
             return;
         }
         Course course = selectCourse();
-        if (course == null) return;
+        if (course == null) {
+            return;
+        }
 
         System.out.print("How many topics do you want to add to the course? ");
         int numTopics = getPositiveInt();
@@ -242,14 +248,18 @@ public class StudyTrackApp {
             return;
         }
         Course course = selectCourse();
-        if (course == null) return;
+        if (course == null) {
+            return;
+        }
 
         if (course.getTopics().isEmpty()) {
             System.out.println("No topics available in this course to delete.");
             return;
         }
         Topic topic = selectTopic(course);
-        if (topic == null) return;
+        if (topic == null) {
+            return;
+        }
 
         System.out.print("Are you sure you want to delete the topic \"" + topic.getName() + "\"? (yes/no): ");
         boolean confirm = getYesOrNo();
@@ -272,7 +282,9 @@ public class StudyTrackApp {
             return;
         }
         Course course = selectCourse();
-        if (course == null) return;
+        if (course == null) {
+            return;
+        }
 
         System.out.print("Are you sure you want to delete the course \"" + course.getName() + "\"? (yes/no): ");
         boolean confirm = getYesOrNo();
@@ -317,23 +329,24 @@ public class StudyTrackApp {
         JsonWriter writer = new JsonWriter("./data/studyTrack.json");
         try {
             writer.open();
-            writer.write(courses);  // Save the current list of courses
+            writer.write(courses);  
             writer.close();
             System.out.println("Progress saved successfully.");
         } catch (FileNotFoundException e) {
             System.out.println("Unable to save progress: " + e.getMessage());
         }
-    }
+    }    
 
     private void loadProgress() {
         JsonReader reader = new JsonReader("./data/studyTrack.json");
         try {
-            courses = reader.read();  // Load the list of courses
+            courses = reader.read();  
             System.out.println("Progress loaded successfully.");
         } catch (IOException e) {
             System.out.println("Unable to load progress: " + e.getMessage());
         }
-    }
+    }    
+    
 
     private void viewProgress() {
         if (courses.isEmpty()) {
@@ -364,7 +377,7 @@ public class StudyTrackApp {
                     }
                 }
             }
-            System.out.println();  // Blank line between courses for readability
+            System.out.println();  
         }
     }
     

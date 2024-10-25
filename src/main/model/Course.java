@@ -11,7 +11,7 @@ import persistence.Writable;
 /**
  * Represents a course containing multiple topics.
  */
-public class Course implements Writable{
+public class Course implements Writable {
     private String name;
     private List<Topic> topics;
    
@@ -51,6 +51,10 @@ public class Course implements Writable{
             }
         }
     }
+    public void addTopicObject(Topic topic) {
+        topics.add(topic);
+    }
+    
 
         
     // Returns the list of topics in the course.
@@ -65,12 +69,14 @@ public class Course implements Writable{
         }
     
         double totalConfidence = 0.0;
-        for (int i = 0; i < topics.size(); i++) {
-            totalConfidence += topics.get(i).getConfidenceLevel();
+        for (Topic topic : topics) {
+            totalConfidence += topic.getConfidenceLevel();  
         }
-        
+    
+        // Return the average progress across all topics
         return totalConfidence / topics.size();
     }
+    
 
     // Returns a string representation of the course, including overall progress.
     @Override
@@ -82,16 +88,16 @@ public class Course implements Writable{
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("name", name);
-
+        json.put("name", name);  
+    
         JSONArray jsonTopics = new JSONArray();
         for (Topic topic : topics) {
-            jsonTopics.put(topic.toJson());  // Add each topic as a JSON object
+            jsonTopics.put(topic.toJson());  
         }
-        json.put("topics", jsonTopics);  // Add the array of topics to the course JSON
-
+        json.put("topics", jsonTopics);  
         return json;
     }
+    
 
 }
 
