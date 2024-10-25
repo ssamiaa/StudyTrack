@@ -70,7 +70,8 @@ public class LessonObjective implements Writable {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("description", description);
-        json.put("isMastered", isMastered);
+        json.put("isMastered", isMastered);  // Add the mastery status
+
         return json;
     }
 

@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Math 101",
+        "topics": [
+            {
+                "name": "Algebra",
+                "confidenceLevel": 100.0,
+                "lessonObjectives": [
+                    {
+                        "description": "Solve linear equations",
+                        "isMastered": true
+                    }
+                ]
+            },
+            {
+                "name": "Calculus",
+                "confidenceLevel": 50.0,
+                "lessonObjectives": [
+                    {
+                        "description": "Differentiate functions",
+                        "isMastered": false
+                    },
+                    {
+                        "description": "Integrate functions",
+                        "isMastered": true
+                    }
+                ]
+            }
+        ]
+    }
+]
+

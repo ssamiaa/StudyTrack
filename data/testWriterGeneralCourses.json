@@ -1,0 +1,31 @@
+[
+    {
+        "topics": [
+            {
+                "confidenceLevel": 100,
+                "lessonObjectives": [{
+                    "isMastered": true,
+                    "description": "Understand variables"
+                }],
+                "name": "Algebra"
+            },
+            {
+                "confidenceLevel": 0,
+                "lessonObjectives": [],
+                "name": "Calculus"
+            }
+        ],
+        "name": "Math 101"
+    },
+    {
+        "topics": [{
+            "confidenceLevel": 0,
+            "lessonObjectives": [{
+                "isMastered": false,
+                "description": "Understand cell structure"
+            }],
+            "name": "Biology"
+        }],
+        "name": "Science 101"
+    }
+]

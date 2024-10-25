@@ -1,0 +1,54 @@
+[
+    {
+        "name": "Math 101",
+        "topics": [
+            {
+                "name": "Algebra",
+                "confidenceLevel": 100.0,
+                "lessonObjectives": [
+                    {
+                        "description": "Understand variables",
+                        "isMastered": true
+                    },
+                    {
+                        "description": "Solve equations",
+                        "isMastered": true
+                    }
+                ]
+            },
+            {
+                "name": "Calculus",
+                "confidenceLevel": 50.0,
+                "lessonObjectives": [
+                    {
+                        "description": "Understand limits",
+                        "isMastered": true
+                    },
+                    {
+                        "description": "Differentiation basics",
+                        "isMastered": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Science 101",
+        "topics": [
+            {
+                "name": "Biology",
+                "confidenceLevel": 80.0,
+                "lessonObjectives": [
+                    {
+                        "description": "Understand cell structure",
+                        "isMastered": true
+                    },
+                    {
+                        "description": "Genetics basics",
+                        "isMastered": false
+                    }
+                ]
+            }
+        ]
+    }
+]

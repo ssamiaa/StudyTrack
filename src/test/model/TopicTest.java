@@ -73,4 +73,15 @@ public class TopicTest {
         String expectedAfterMaster = "Photosynthesis (100.0% confident)";
         assertEquals(expectedAfterMaster, topic.toString());
     }
+    
+    @Test
+    void testUpdateConfidenceLevelEmptyObjectives() {
+        
+        Topic topic = new Topic("Algebra");
+
+        
+        topic.updateConfidenceLevel();
+
+        assertEquals(0.0, topic.getConfidenceLevel(), 0.01, "Confidence level should be 0.0 when no lesson objectives");
+    }
 }

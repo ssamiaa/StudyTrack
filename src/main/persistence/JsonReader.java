@@ -16,7 +16,6 @@ import org.json.*;
 
 // Referenced from the JsonSerialization Demo
 // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
-
 // Represents a reader that reads the StudyTrack state from JSON data stored in file
 public class JsonReader {
     private String source;
@@ -91,11 +90,9 @@ public class JsonReader {
             }
         }
     
-        // Load confidence level from the JSON
-        if (jsonObject.has("confidenceLevel")) {
-            double confidenceLevel = jsonObject.getDouble("confidenceLevel");
-            topic.setConfidenceLevel(confidenceLevel);
-        }
+        // Load confidence level from the JSON (assuming it is always present)
+        double confidenceLevel = jsonObject.getDouble("confidenceLevel");
+        topic.setConfidenceLevel(confidenceLevel);
     
         return topic;
     }

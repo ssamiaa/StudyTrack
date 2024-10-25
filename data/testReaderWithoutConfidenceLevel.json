@@ -1,0 +1,25 @@
+[
+    {
+        "name": "Math 101",
+        "topics": [
+            {
+                "name": "Algebra",
+                "lessonObjectives": [
+                    {
+                        "description": "Solve linear equations",
+                        "isMastered": true
+                    }
+                ]
+            },
+            {
+                "name": "Calculus",
+                "lessonObjectives": [
+                    {
+                        "description": "Differentiate functions",
+                        "isMastered": false
+                    }
+                ]
+            }
+        ]
+    }
+]
