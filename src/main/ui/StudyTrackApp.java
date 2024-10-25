@@ -52,12 +52,15 @@ public class StudyTrackApp {
                     deleteCourse();
                     break;
                 case 6:
-                    saveProgress();   // Call save progress method
+                    saveProgress();
                     break;
                 case 7:
-                    loadProgress();   // Call load progress method
+                    loadProgress();
                     break;
                 case 8:
+                    viewProgress();   
+                    break;
+                case 9:
                     System.out.println("Goodbye!");
                     exit = true;
                     break;
@@ -67,6 +70,7 @@ public class StudyTrackApp {
         }
         scanner.close();
     }
+    
     
 
     /**
@@ -81,9 +85,11 @@ public class StudyTrackApp {
         System.out.println("5. Delete a course");
         System.out.println("6. Save progress");
         System.out.println("7. Load progress");
-        System.out.println("8. Exit");
+        System.out.println("8. View Progress");  
+        System.out.println("9. Exit");
         System.out.print("Enter your choice: ");
     }
+    
 
     /**
      * EFFECTS: Retrieves the user's menu choice.
@@ -320,16 +326,48 @@ public class StudyTrackApp {
     }
 
     private void loadProgress() {
-    JsonReader reader = new JsonReader("./data/studyTrack.json");
-    try {
-        courses = reader.read();  // Load the list of courses
-        System.out.println("Progress loaded successfully.");
-    } catch (IOException e) {
-        System.out.println("Unable to load progress: " + e.getMessage());
+        JsonReader reader = new JsonReader("./data/studyTrack.json");
+        try {
+            courses = reader.read();  // Load the list of courses
+            System.out.println("Progress loaded successfully.");
+        } catch (IOException e) {
+            System.out.println("Unable to load progress: " + e.getMessage());
+        }
     }
-}
 
-
+    private void viewProgress() {
+        if (courses.isEmpty()) {
+            System.out.println("No courses available.");
+            return;
+        }
+    
+        for (Course course : courses) {
+            System.out.println("Course: " + course.getName());
+            System.out.printf("Overall Progress: %.2f%%\n", course.getOverallProgress());
+    
+            List<Topic> topics = course.getTopics();
+            if (topics.isEmpty()) {
+                System.out.println("  No topics available.");
+            } else {
+                for (Topic topic : topics) {
+                    System.out.println("  Topic: " + topic.getName());
+                    System.out.printf("  Topic Progress: %.2f%%\n", topic.getConfidenceLevel());
+    
+                    List<LessonObjective> objectives = topic.getLessonObjectives();
+                    if (objectives.isEmpty()) {
+                        System.out.println("    No lesson objectives.");
+                    } else {
+                        for (LessonObjective objective : objectives) {
+                            String status = objective.isMastered() ? "Mastered" : "Not Mastered";
+                            System.out.println("    Objective: " + objective.getDescription() + " [" + status + "]");
+                        }
+                    }
+                }
+            }
+            System.out.println();  // Blank line between courses for readability
+        }
+    }
+    
 
     /**
      * EFFECTS: Retrieves a positive integer input from the user.
