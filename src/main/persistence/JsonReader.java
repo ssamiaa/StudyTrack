@@ -81,16 +81,16 @@ public class JsonReader {
             JSONObject jsonObjective = objectivesArray.getJSONObject(i);
             LessonObjective lessonObjective = parseLessonObjective(jsonObjective);
             
-            // Add the parsed lesson objective to the topic
+            
             topic.addLessonObjective(lessonObjective.getDescription());
     
-            // If mastered, mark it accordingly
+            
             if (lessonObjective.isMastered()) {
                 topic.markObjectiveAsMastered(i);  
             }
         }
     
-        // Load confidence level from the JSON (assuming it is always present)
+        
         double confidenceLevel = jsonObject.getDouble("confidenceLevel");
         topic.setConfidenceLevel(confidenceLevel);
     

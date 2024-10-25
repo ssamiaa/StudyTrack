@@ -30,10 +30,10 @@ public class JsonWriter {
         JSONArray jsonCourses = new JSONArray();
     
         for (Course course : courses) {
-            jsonCourses.put(course.toJson());  // Convert each course to JSON
+            jsonCourses.put(course.toJson()); 
         }
     
-        saveToFile(jsonCourses.toString(4));  // Write the JSON to file with indentation
+        saveToFile(jsonCourses.toString(4));  
     }
     
 
