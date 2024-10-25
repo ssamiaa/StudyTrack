@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import persistence.Writable;
 
 //Represents a single lesson objective within a topic.
-public class LessonObjective implements Writable{
+public class LessonObjective implements Writable {
     private String description;
     private boolean isMastered;
 

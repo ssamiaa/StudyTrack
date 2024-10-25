@@ -11,7 +11,7 @@ import persistence.Writable;
 /**
  * Represents a topic within a course, containing multiple lesson objectives.
  */
-public class Topic implements Writable{
+public class Topic implements Writable {
     private String name;
     private List<LessonObjective> lessonObjectives;
     private double confidenceLevel; // percentage of mastered objectives
@@ -109,9 +109,6 @@ public class Topic implements Writable{
         confidenceLevel = ((double) masteredCount / lessonObjectives.size()) * 100.0;
     }
 
-    
-    
-
     /**
      * EFFECTS: Returns a string representation of the topic, including confidence level.
      */
@@ -123,8 +120,6 @@ public class Topic implements Writable{
     public void setConfidenceLevel(double confidenceLevel) {
         this.confidenceLevel = confidenceLevel;
     }
-    
-
 
     @Override
     public JSONObject toJson() {
@@ -139,7 +134,6 @@ public class Topic implements Writable{
         json.put("lessonObjectives", jsonLessonObjectives);  
         return json;
     }
-
 
 }
 

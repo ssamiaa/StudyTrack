@@ -29,7 +29,6 @@ public class Course implements Writable {
         return name;
     }
 
-
     // Adds a topic to the course.
     // REQUIRES: topicName is a non-empty string.
     // MODIFIES: this
@@ -51,11 +50,15 @@ public class Course implements Writable {
             }
         }
     }
+
+    /**
+     * REQUIRES: topic is not null.
+     * MODIFIES: this
+     * EFFECTS: Adds the given Topic object to the list of topics in this course.
+     */
     public void addTopicObject(Topic topic) {
         topics.add(topic);
     }
-    
-
         
     // Returns the list of topics in the course.
     public List<Topic> getTopics() {

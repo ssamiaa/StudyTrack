@@ -1,4 +1,5 @@
 package ui;
+
 /**
  * The entry point of the StudyTrack application.
  */

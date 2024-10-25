@@ -30,6 +30,7 @@ public class StudyTrackApp {
     /**
      * EFFECTS: Runs the StudyTrack application, displaying the main menu and handling user choices.
      */
+    @SuppressWarnings("methodlength")
     public void run() {
         boolean exit = false;
         while (!exit) {
@@ -109,78 +110,151 @@ public class StudyTrackApp {
         System.out.print("How many courses do you want to add? ");
         int numCourses = getPositiveInt();
         for (int i = 1; i <= numCourses; i++) {
-            System.out.print("What is the name of course " + i + "? ");
-            String courseName = getNonEmptyString();
-            Course course = new Course(courseName);
+            Course course = createCourse(i);
             courses.add(course);
-
-            System.out.print("How many topics do you want to add in the course? ");
-            int numTopics = getPositiveInt();
-            for (int j = 1; j <= numTopics; j++) {
-                System.out.print("What is the name of topic " + j + "? ");
-                String topicName = getNonEmptyString();
-                course.addTopic(topicName);
-
-                System.out.print("How many lesson objectives are there? ");
-                int numObjectives = getPositiveInt();
-                for (int k = 1; k <= numObjectives; k++) {
-                    System.out.print("What is lesson objective " + k + "? ");
-                    String objective = getNonEmptyString();
-                    course.getTopics().get(j - 1).addLessonObjective(objective);
-                }
-
-                System.out.print("How many objectives are you confident in? ");
-                int confidentObjectives = getConfidentObjectives(numObjectives);
-                for (int k = 0; k < confidentObjectives; k++) {
-                    course.getTopics().get(j - 1).markObjectiveAsMastered(k);
-                }
-
-                System.out.printf("Your progress for topic %s is %.2f%%\n",
-                        topicName, course.getTopics().get(j - 1).getConfidenceLevel());
-            }
-
-            System.out.printf("Your overall progress for %s is %.2f%%\n",
-                    courseName, course.getOverallProgress());
+            addTopicsToCourse(course);
+            System.out.printf("Your overall progress for %s is %.2f%%\n", 
+                          course.getName(), course.getOverallProgress());
         }
     }
+
+    /**
+     * EFFECTS: Creates and returns a new course based on user input.
+     */
+    private Course createCourse(int courseNumber) {
+        System.out.print("What is the name of course " + courseNumber + "? ");
+        String courseName = getNonEmptyString();
+        return new Course(courseName);
+    }
+
+    /**
+     * MODIFIES: course
+     * EFFECTS: Adds topics and lesson objectives to the given course based on user input.
+     */
+    private void addTopicsToCourse(Course course) {
+        System.out.print("How many topics do you want to add in the course? ");
+        int numTopics = getPositiveInt();
+        for (int j = 1; j <= numTopics; j++) {
+            addTopicToCourse(course, j);
+        }
+    }
+
+    /**
+     * MODIFIES: course
+     * EFFECTS: Adds a topic and its lesson objectives to the given course based on user input.
+     */
+    private void addTopicToCourse(Course course, int topicNumber) {
+        System.out.print("What is the name of topic " + topicNumber + "? ");
+        String topicName = getNonEmptyString();
+        course.addTopic(topicName);
+        int numObjectives = getPositiveInt();
+        addObjectivesToTopic(course, topicNumber - 1, numObjectives);
+        System.out.printf("Your progress for topic %s is %.2f%%\n",
+                           topicName, course.getTopics().get(topicNumber - 1).getConfidenceLevel());
+    }
+
+    /**
+     * MODIFIES: topic
+     * EFFECTS: Adds lesson objectives to the given topic based on user input.
+     */
+    private void addObjectivesToTopic(Course course, int topicIndex, int numObjectives) {
+        for (int k = 1; k <= numObjectives; k++) {
+            System.out.print("What is lesson objective " + k + "? ");
+            String objective = getNonEmptyString();
+            course.getTopics().get(topicIndex).addLessonObjective(objective);
+        }
+        int confidentObjectives = getConfidentObjectives(numObjectives);
+        for (int k = 0; k < confidentObjectives; k++) {
+            course.getTopics().get(topicIndex).markObjectiveAsMastered(k);
+        }
+    }
+
 
     /**
      * EFFECTS: Updates lesson objective progress based on user input.
      */
     private void updateLessonObjectiveProgress() {
+        if (checkIfEmptyCourses()) {
+            return;
+        }
+
+        Course course = selectCourse();
+        if (course == null || checkIfEmptyTopics(course)) {
+            return;
+        }
+
+        Topic topic = selectTopic(course);
+        if (topic == null || checkIfEmptyObjectives(topic)) {
+            return;
+        }
+
+        displayLessonObjectives(topic);
+
+        LessonObjective selectedObjective = selectLessonObjective(topic);
+        updateObjectiveProgress(selectedObjective);
+
+        printProgress(topic, course);
+    }
+
+    /**
+     * EFFECTS: Checks if there are no courses available to update.
+     */
+    private boolean checkIfEmptyCourses() {
         if (courses.isEmpty()) {
             System.out.println("No courses available to update.");
-            return;
+            return true;
         }
-        Course course = selectCourse();
-        if (course == null) {
-            return;
-        }
+        return false;
+    }
 
+    /**
+     * EFFECTS: Checks if there are no topics in the selected course.
+     */
+    private boolean checkIfEmptyTopics(Course course) {
         if (course.getTopics().isEmpty()) {
             System.out.println("No topics available in this course to update.");
-            return;
+            return true;
         }
-        Topic topic = selectTopic(course);
-        if (topic == null) {
-            return;
-        }
+        return false;
+    }
 
-        List<LessonObjective> objectives = topic.getLessonObjectives();
-        if (objectives.isEmpty()) {
+    /**
+     * EFFECTS: Checks if there are no lesson objectives in the selected topic.
+     */
+    private boolean checkIfEmptyObjectives(Topic topic) {
+        if (topic.getLessonObjectives().isEmpty()) {
             System.out.println("No lesson objectives available in this topic to update.");
-            return;
+            return true;
         }
+        return false;
+    }
 
+    /**
+     * EFFECTS: Displays the list of lesson objectives for the topic.
+     */
+    private void displayLessonObjectives(Topic topic) {
+        List<LessonObjective> objectives = topic.getLessonObjectives();
         System.out.println("Lesson Objectives:");
         for (int i = 0; i < objectives.size(); i++) {
             System.out.println((i + 1) + ". " + objectives.get(i));
         }
+    }
 
+    /**
+     * EFFECTS: Prompts the user to select a lesson objective from the topic.
+     */
+    private LessonObjective selectLessonObjective(Topic topic) {
+        List<LessonObjective> objectives = topic.getLessonObjectives();
         System.out.print("Enter the number of the lesson objective to update: ");
         int objChoice = getChoiceInRange(1, objectives.size());
-        LessonObjective selectedObjective = objectives.get(objChoice - 1);
+        return objectives.get(objChoice - 1);
+    }
 
+    /**
+     * MODIFIES: selectedObjective
+     * EFFECTS: Updates the progress of the selected lesson objective.
+     */
+    private void updateObjectiveProgress(LessonObjective selectedObjective) {
         System.out.print("Mark as mastered? (yes/no): ");
         boolean master = getYesOrNo();
         if (master) {
@@ -190,16 +264,21 @@ public class StudyTrackApp {
             selectedObjective.unmarkAsMastered();
             System.out.println("Lesson objective unmarked as mastered.");
         }
-
-        System.out.printf("Your progress for topic %s is %.2f%%\n",
-                topic.getName(), topic.getConfidenceLevel());
-        System.out.printf("Your overall progress for %s is %.2f%%\n",
-                course.getName(), course.getOverallProgress());
     }
+
+    /**
+     * EFFECTS: Prints the progress for the topic and course.
+     */
+    private void printProgress(Topic topic, Course course) {
+        System.out.printf("Your progress for topic %s is %.2f%%\n", topic.getName(), topic.getConfidenceLevel());
+        System.out.printf("Your overall progress for %s is %.2f%%\n", course.getName(), course.getOverallProgress());
+    }
+
 
     /**
      * EFFECTS: Adds more topics to an existing course based on user input.
      */
+    @SuppressWarnings("methodlength")
     private void addMoreTopicsToCourse() {
         if (courses.isEmpty()) {
             System.out.println("No courses available to add topics.");
@@ -242,6 +321,7 @@ public class StudyTrackApp {
     /**
      * EFFECTS: Deletes a topic from an existing course based on user input.
      */
+    @SuppressWarnings("methodlength")
     private void deleteTopic() {
         if (courses.isEmpty()) {
             System.out.println("No courses available to delete topics from.");
@@ -267,7 +347,7 @@ public class StudyTrackApp {
             course.removeTopic(topic.getName());
             System.out.println("Topic deleted successfully.");
             System.out.printf("Your overall progress for %s is %.2f%%\n",
-                    course.getName(), course.getOverallProgress());
+                              course.getName(), course.getOverallProgress());
         } else {
             System.out.println("Deletion canceled.");
         }
@@ -347,7 +427,7 @@ public class StudyTrackApp {
         }
     }    
     
-
+    @SuppressWarnings("methodlength")
     private void viewProgress() {
         if (courses.isEmpty()) {
             System.out.println("No courses available.");
@@ -357,7 +437,7 @@ public class StudyTrackApp {
         for (Course course : courses) {
             System.out.println("Course: " + course.getName());
             System.out.printf("Overall Progress: %.2f%%\n", course.getOverallProgress());
-    
+
             List<Topic> topics = course.getTopics();
             if (topics.isEmpty()) {
                 System.out.println("  No topics available.");

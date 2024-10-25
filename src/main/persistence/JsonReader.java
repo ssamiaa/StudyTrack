@@ -14,6 +14,9 @@ import java.util.stream.Stream;
 
 import org.json.*;
 
+// Referenced from the JsonSerialization Demo
+// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+
 // Represents a reader that reads the StudyTrack state from JSON data stored in file
 public class JsonReader {
     private String source;
@@ -61,14 +64,12 @@ public class JsonReader {
         for (Object obj : topicsArray) {
             JSONObject jsonTopic = (JSONObject) obj;
             Topic topic = parseTopic(jsonTopic);
-    
             
             course.addTopicObject(topic);  
         }
     
         return course;
     }
-    
     
 
     // EFFECTS: parses a topic from JSON object and returns it
@@ -99,7 +100,6 @@ public class JsonReader {
         return topic;
     }
     
-
     private LessonObjective parseLessonObjective(JSONObject jsonObject) {
         String description = jsonObject.getString("description");
         boolean isMastered = jsonObject.getBoolean("isMastered");
