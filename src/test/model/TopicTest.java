@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
@@ -73,7 +75,7 @@ public class TopicTest {
         String expectedAfterMaster = "Photosynthesis (100.0% confident)";
         assertEquals(expectedAfterMaster, topic.toString());
     }
-    
+
     @Test
     void testUpdateConfidenceLevelEmptyObjectives() {
         
@@ -84,4 +86,37 @@ public class TopicTest {
 
         assertEquals(0.0, topic.getConfidenceLevel(), 0.01, "Confidence level should be 0.0 when no lesson objectives");
     }
+
+    @Test
+    void testToJson() {
+        Topic topic = createSampleTopic();  // Create sample topic with objectives
+        JSONObject json = topic.toJson();  // Convert to JSON
+
+        validateJson(json);  // Validate the JSON structure
+    }
+
+    private Topic createSampleTopic() {
+        Topic topic = new Topic("Algebra");
+        topic.addLessonObjective("Understand variables");
+        topic.addLessonObjective("Solve equations");
+        topic.markObjectiveAsMastered(0);  // Mark the first objective as mastered
+        topic.setConfidenceLevel(50.0);  // Set confidence level manually
+        return topic;
+    }
+
+    private void validateJson(JSONObject json) {
+        assertEquals("Algebra", json.getString("name"));  // Validate topic name
+        assertEquals(50.0, json.getDouble("confidenceLevel"), 0.01);  // Validate confidence level
+
+        JSONArray objectivesArray = json.getJSONArray("lessonObjectives");
+        assertEquals(2, objectivesArray.length());  // Validate number of objectives
+        validateLessonObjective(objectivesArray.getJSONObject(0), "Understand variables", true);
+        validateLessonObjective(objectivesArray.getJSONObject(1), "Solve equations", false);
+    }
+
+    private void validateLessonObjective(JSONObject jsonObjective, String description, boolean isMastered) {
+        assertEquals(description, jsonObjective.getString("description"));  // Validate description
+        assertEquals(isMastered, jsonObjective.getBoolean("isMastered"));  // Validate mastery status
+    }
+    
 }

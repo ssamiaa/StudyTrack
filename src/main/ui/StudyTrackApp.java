@@ -548,7 +548,7 @@ public class StudyTrackApp {
                 System.out.print("Please enter a number between " + min + " and " + max + ": ");
             }
         } while (choice < min || choice > max);
-        scanner.nextLine(); // consume the remaining newline
+        scanner.nextLine(); 
         return choice;
     }
 }

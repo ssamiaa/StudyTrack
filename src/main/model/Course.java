@@ -46,7 +46,7 @@ public class Course implements Writable {
         for (int i = 0; i < topics.size(); i++) {
             if (topics.get(i).getName().equalsIgnoreCase(topicName)) {
                 topics.remove(i);
-                i--; // Adjust index after removal
+                i--; 
             }
         }
     }
