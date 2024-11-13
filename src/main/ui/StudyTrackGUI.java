@@ -16,6 +16,7 @@ public class StudyTrackGUI extends JFrame {
     private JPanel mainDisplayPanel;
     private JPanel courseListPanel;
     private JPanel topicsPanel;
+    private CircularProgressBar progressBar;  
 
     private List<String> courses;  
     private Map<String, List<Topic>> courseTopicsMap;  
@@ -71,6 +72,10 @@ public class StudyTrackGUI extends JFrame {
         JLabel welcomeMessage = new JLabel("Welcome to StudyTrack!", SwingConstants.CENTER);
         welcomeMessage.setFont(new Font("Serif", Font.BOLD, 24));
         mainDisplayPanel.add(welcomeMessage, BorderLayout.CENTER);
+
+        // Add the circular progress bar
+        progressBar = new CircularProgressBar();
+        mainDisplayPanel.add(progressBar, BorderLayout.EAST);
     }
 
     private void addNewCourse() {
@@ -89,6 +94,7 @@ public class StudyTrackGUI extends JFrame {
 
     private void showCourseDetails(String courseName) {
         mainDisplayPanel.removeAll();
+        mainDisplayPanel.add(progressBar, BorderLayout.EAST);
 
         JLabel courseLabel = new JLabel(courseName, SwingConstants.CENTER);
         courseLabel.setFont(new Font("Serif", Font.BOLD, 20));
@@ -105,38 +111,56 @@ public class StudyTrackGUI extends JFrame {
         List<Topic> topics = courseTopicsMap.get(courseName);
         if (topics != null) {
             for (Topic topic : topics) {
-                addTopicToPanel(topic);
+                addTopicToPanel(topic, courseName);
             }
         }
 
+        // "Add Topic" button with inline logic
         JButton addTopicButton = new JButton("+ Add Topic");
-        addTopicButton.addActionListener(e -> addNewTopic(courseName));
+        addTopicButton.addActionListener(e -> {
+            // Prompt user for topic name
+            String topicName = JOptionPane.showInputDialog(this, "Enter topic name:");
+            if (topicName != null && !topicName.trim().isEmpty()) {
+                // Create a new Topic object
+                Topic newTopic = new Topic(topicName);
+
+                // Prompt for lesson objectives count
+                String objectivesCountStr = JOptionPane.showInputDialog(this, "How many lesson objectives?");
+                int objectiveCount;
+                try {
+                    objectiveCount = Integer.parseInt(objectivesCountStr);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid number.");
+                    return;
+                }
+
+                // Collect lesson objectives from the user
+                for (int i = 1; i <= objectiveCount; i++) {
+                    String objective = JOptionPane.showInputDialog(this, "Enter objective " + i + ":");
+                    if (objective != null && !objective.trim().isEmpty()) {
+                        newTopic.addLessonObjective(objective);
+                    }
+                }
+
+                // Add the new topic to the selected course's list
+                List<Topic> courseTopics = courseTopicsMap.get(courseName);
+                if (courseTopics != null) {
+                    courseTopics.add(newTopic);  
+                    addTopicToPanel(newTopic, courseName);  
+                    updateCourseConfidence(courseName);  
+                }
+            }
+        });
         mainDisplayPanel.add(addTopicButton, BorderLayout.SOUTH);
 
         mainDisplayPanel.add(new JScrollPane(topicsPanel), BorderLayout.CENTER);
 
+        updateCourseConfidence(courseName);  
         mainDisplayPanel.revalidate();
         mainDisplayPanel.repaint();
     }
 
-    private void addNewTopic(String courseName) {
-        String topicName = JOptionPane.showInputDialog(this, "Enter topic name:");
-        if (topicName != null && !topicName.trim().isEmpty()) {
-            Topic newTopic = new Topic(topicName);  
-            int objectiveCount = Integer.parseInt(JOptionPane.showInputDialog(this, "How many lesson objectives?"));
-            for (int i = 1; i <= objectiveCount; i++) {
-                String objective = JOptionPane.showInputDialog(this, "Enter objective " + i + ":");
-                if (objective != null && !objective.trim().isEmpty()) {
-                    newTopic.addLessonObjective(objective);  
-                }
-            }
-
-            courseTopicsMap.get(courseName).add(newTopic);
-            addTopicToPanel(newTopic);
-        }
-    }
-
-    private void addTopicToPanel(Topic topic) {
+    private void addTopicToPanel(Topic topic, String courseName) {
         JPanel topicPanel = new JPanel();
         topicPanel.setBackground(new Color(240, 255, 240));
         topicPanel.setLayout(new BoxLayout(topicPanel, BoxLayout.Y_AXIS));
@@ -146,9 +170,8 @@ public class StudyTrackGUI extends JFrame {
         topicLabel.setFont(new Font("Serif", Font.BOLD, 14));
         topicPanel.add(topicLabel);
 
-        // Button to open a pop-up window showing lesson objectives
         JButton viewObjectivesButton = new JButton("View Lesson Objectives");
-        viewObjectivesButton.addActionListener(e -> openLessonObjectivesDialog(topic, topicLabel));
+        viewObjectivesButton.addActionListener(e -> openLessonObjectivesDialog(topic, topicLabel, courseName));
         topicPanel.add(viewObjectivesButton);
 
         topicsPanel.add(topicPanel);
@@ -156,12 +179,11 @@ public class StudyTrackGUI extends JFrame {
         topicsPanel.repaint();
     }
 
-    private void openLessonObjectivesDialog(Topic topic, JLabel topicLabel) {
+    private void openLessonObjectivesDialog(Topic topic, JLabel topicLabel, String courseName) {
         JDialog objectivesDialog = new JDialog(this, "Lesson Objectives - " + topic.getName(), true);
         objectivesDialog.setSize(400, 300);
         objectivesDialog.setLayout(new BoxLayout(objectivesDialog.getContentPane(), BoxLayout.Y_AXIS));
 
-        // Adding lesson objectives as checkboxes
         for (LessonObjective objective : topic.getLessonObjectives()) {
             JCheckBox objectiveCheckbox = new JCheckBox(objective.getDescription());
             objectiveCheckbox.setSelected(objective.isMastered());
@@ -173,17 +195,32 @@ public class StudyTrackGUI extends JFrame {
                 }
                 topic.updateConfidenceLevel();
                 topicLabel.setText(topic.getName() + " - Confidence: " + topic.getConfidenceLevel() + "%");
+                updateCourseConfidence(courseName);  
             });
             objectivesDialog.add(objectiveCheckbox);
         }
 
-        // Close button to close the dialog
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(e -> objectivesDialog.dispose());
         objectivesDialog.add(closeButton);
 
         objectivesDialog.setLocationRelativeTo(this);
         objectivesDialog.setVisible(true);
+    }
+
+    private void updateCourseConfidence(String courseName) {
+        List<Topic> topics = courseTopicsMap.get(courseName);
+        if (topics == null || topics.isEmpty()) {
+            progressBar.setProgress(0);
+            return;
+        }
+
+        int totalConfidence = 0;
+        for (Topic topic : topics) {
+            totalConfidence += topic.getConfidenceLevel();
+        }
+        int averageConfidence = totalConfidence / topics.size();
+        progressBar.setProgress(averageConfidence);
     }
 
     private class CourseButtonListener implements ActionListener {
@@ -197,5 +234,52 @@ public class StudyTrackGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             showCourseDetails(courseName);
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new StudyTrackGUI());
+    }
+}
+
+class CircularProgressBar extends JPanel {
+    private int progress = 0;
+
+    public CircularProgressBar() {
+        setPreferredSize(new Dimension(100, 100));  
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+        repaint();  
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        int size = Math.min(getWidth(), getHeight());
+        int strokeWidth = 8;
+        int radius = size / 2 - strokeWidth;
+
+       
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.setStroke(new BasicStroke(strokeWidth));
+        g2d.drawArc(strokeWidth, strokeWidth, size - 2 * strokeWidth, size - 2 * strokeWidth, 0, 360);
+
+        
+        g2d.setColor(new Color(76, 175, 80));  
+        int angle = (int) (360 * (progress / 100.0));
+        g2d.drawArc(strokeWidth, strokeWidth, size - 2 * strokeWidth, size - 2 * strokeWidth, 90, -angle);
+
+        
+        g2d.setFont(new Font("Serif", Font.BOLD, 18));
+        FontMetrics fm = g2d.getFontMetrics();
+        String text = progress + "%";
+        int textX = (size - fm.stringWidth(text)) / 2;
+        int textY = (size + fm.getAscent()) / 2 - 4;
+        g2d.drawString(text, textX, textY);
+
+        g2d.dispose();
     }
 }
