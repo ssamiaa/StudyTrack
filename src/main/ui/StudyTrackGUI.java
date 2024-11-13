@@ -2,15 +2,21 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudyTrackGUI extends JFrame {
     private JPanel coursesPanel;
     private JPanel mainDisplayPanel;
-    private JList<String> courseList;  
-    private DefaultListModel<String> courseListModel;
+    private JPanel courseListPanel;  
+    private List<String> courses;    
 
     public StudyTrackGUI() {
         super("StudyTrack - Course Progress Tracker");
+
+        courses = new ArrayList<>();  // Initialize course list
 
         // Set up the main frame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,12 +55,12 @@ public class StudyTrackGUI extends JFrame {
         coursesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         coursesPanel.add(addCourseButton);
 
-        // Add list to display courses
-        courseListModel = new DefaultListModel<>();
-        courseList = new JList<>(courseListModel);
-        JScrollPane courseScrollPane = new JScrollPane(courseList);
+        // Initialize panel to hold course buttons
+        courseListPanel = new JPanel();
+        courseListPanel.setLayout(new BoxLayout(courseListPanel, BoxLayout.Y_AXIS));
+        courseListPanel.setBackground(new Color(200, 255, 200));
         coursesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        coursesPanel.add(courseScrollPane);
+        coursesPanel.add(courseListPanel);
     }
 
     private void setupMainDisplayPanel() {
@@ -69,14 +75,42 @@ public class StudyTrackGUI extends JFrame {
     }
 
     private void addNewCourse() {
-        // dummy right now
+        // Prompt the user to enter a course name
         String courseName = JOptionPane.showInputDialog(this, "Enter course name:");
         if (courseName != null && !courseName.trim().isEmpty()) {
-            courseListModel.addElement(courseName);
+            courses.add(courseName);  // Add course to list
+
+            // Create a button for the new course
+            JButton courseButton = new JButton(courseName);
+            courseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            courseButton.addActionListener(new CourseButtonListener(courseName));
+            courseListPanel.add(courseButton);
+            courseListPanel.revalidate();  // Refresh the course list panel to display the new button
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new StudyTrackGUI());
+    private void showCourseDetails(String courseName) {
+        // Clear the main display panel and show the course details
+        mainDisplayPanel.removeAll();
+        JLabel courseLabel = new JLabel("Course: " + courseName, SwingConstants.CENTER);
+        courseLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        mainDisplayPanel.add(courseLabel, BorderLayout.CENTER);
+        mainDisplayPanel.revalidate();
+        mainDisplayPanel.repaint();
     }
+
+    // Inner class for handling course button clicks
+    private class CourseButtonListener implements ActionListener {
+        private String courseName;
+
+        public CourseButtonListener(String courseName) {
+            this.courseName = courseName;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            showCourseDetails(courseName);  // Display details of the selected course
+        }
+    }
+
 }
