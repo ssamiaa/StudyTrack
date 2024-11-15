@@ -4,11 +4,6 @@ import model.Course;
 import org.json.JSONArray;
 import java.io.*;
 import java.util.List;
-
-// Referenced from the JsonSerialization Demo
-// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
-
-// Represents a writer that writes JSON representation of the courses to file
 public class JsonWriter {
     private PrintWriter writer;
     private String destination;
@@ -35,7 +30,6 @@ public class JsonWriter {
     
         saveToFile(jsonCourses.toString(4));  
     }
-    
 
     // MODIFIES: this
     // EFFECTS: closes writer
