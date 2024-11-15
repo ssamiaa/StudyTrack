@@ -30,3 +30,24 @@ This project is interesting to me because it addresses a common problem students
 - As a user, I want to view all my courses, along with their associated topics, lesson objectives, and progress in one place, so that I can easily assess my learning progress and see what areas I need to focus on.
 - As a user, I want to save my course progress, including topics and lesson objectives, so that I can continue my work later without losing any of my tracked progress.
 - as a user, As a student, I want to load my previously saved course progress so that I can resume where I left off without having to re-enter any information.
+
+
+### Instructions for End User
+
+**How to add a Topic to a Course:**
+- To add a new topic to a course, first select the course from the list on the left side panel by clicking on its name. Then, in the main display area, click the button labeled "+ Add Topic". You will be prompted to enter a topic name, followed by the option to specify lesson objectives for that topic.
+
+**First Required Action (View Lesson Objectives for a Topic):**
+- After adding topics, you can view and interact with each topic's lesson objectives by clicking the "View Lesson Objectives" button below the topic name. A new window will open, displaying a checklist of lesson objectives for that topic, allowing you to mark each objective as mastered by selecting the checkbox next to it.
+
+**Second Required Action (Track Overall Course Confidence):**
+- Each course’s overall confidence level is visually represented by a circular progress bar located in the main display area. The progress bar updates automatically as you mark lesson objectives as mastered within each topic, giving you a real-time view of your confidence level across all topics in the course.
+
+**Location of the Visual Component:**
+- The circular progress bar, located on the right side of the main display area, is the visual component representing the course’s overall confidence. It dynamically updates to reflect the average confidence percentage across all topics in the selected course.
+
+**How to Save the State of the Application to File:**
+- To save your current progress, click on the "Save Data" button located in the left side panel under the list of courses. This will save all courses, topics, and lesson objectives to a file, allowing you to load this progress later.
+
+**How to Load the State of the Application from File:**
+- To load previously saved data, click on the "Load Data" button located in the left side panel under the list of courses. This will retrieve all saved courses, topics, and lesson objectives from the file, restoring them to the application so you can continue from where you left off.
