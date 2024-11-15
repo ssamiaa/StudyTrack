@@ -7,12 +7,12 @@ public class CircularProgressBar extends JPanel {
     private int progress = 0;
 
     public CircularProgressBar() {
-        setPreferredSize(new Dimension(100, 100));  // Set a default size
+        setPreferredSize(new Dimension(100, 100));  
     }
 
     public void setProgress(int progress) {
         this.progress = progress;
-        repaint();  // Repaint the component whenever the progress changes
+        repaint();  
     }
 
     @Override
