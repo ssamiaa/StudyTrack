@@ -71,6 +71,7 @@ public class StudyTrackGUI extends JFrame {
         topPanel.add(coursesLabel);
         
         JButton addCourseButton = new JButton("+ Add Courses");
+        styleButton(addCourseButton);
         addCourseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         addCourseButton.addActionListener(e -> addNewCourse());
         topPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -90,12 +91,14 @@ public class StudyTrackGUI extends JFrame {
         bottomPanel.setBackground(new Color(92, 64, 51));
         
         JButton saveButton = new JButton("Save Data");
+        styleButton(saveButton);
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         saveButton.addActionListener(e -> saveData());
         bottomPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         bottomPanel.add(saveButton);
         
         JButton loadButton = new JButton("Load Data");
+        styleButton(loadButton);
         loadButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         loadButton.addActionListener(e -> loadData());
         bottomPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -410,5 +413,13 @@ public class StudyTrackGUI extends JFrame {
         }
         courseListPanel.revalidate();
         courseListPanel.repaint();
+    }
+
+    // Helper method to style buttons
+    private void styleButton(JButton button) {
+        button.setPreferredSize(new Dimension(150, 40)); 
+        button.setFont(new Font("Chalkboard", Font.PLAIN, 16)); 
+        button.setBackground(new Color(241, 241, 200)); 
+        button.setForeground(new Color(92, 64, 51)); 
     }
 }
