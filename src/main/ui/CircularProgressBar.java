@@ -22,7 +22,6 @@ public class CircularProgressBar extends JPanel {
 
         int size = Math.min(getWidth(), getHeight());
         int strokeWidth = 8;
-        int radius = size / 2 - strokeWidth;
 
         // Draw background circle
         g2d.setColor(Color.LIGHT_GRAY);
@@ -30,7 +29,7 @@ public class CircularProgressBar extends JPanel {
         g2d.drawArc(strokeWidth, strokeWidth, size - 2 * strokeWidth, size - 2 * strokeWidth, 0, 360);
 
         // Draw progress arc
-        g2d.setColor(new Color(76, 175, 80));  // Green color for progress
+        g2d.setColor(new Color(92, 64, 51));  // Green color for progress
         int angle = (int) (360 * (progress / 100.0));
         g2d.drawArc(strokeWidth, strokeWidth, size - 2 * strokeWidth, size - 2 * strokeWidth, 90, -angle);
 

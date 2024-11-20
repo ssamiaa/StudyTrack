@@ -55,53 +55,75 @@ public class StudyTrackGUI extends JFrame {
     @SuppressWarnings("methodlength")
     private void setupCoursesPanel() {
         coursesPanel = new JPanel();
-        coursesPanel.setLayout(new BoxLayout(coursesPanel, BoxLayout.Y_AXIS));
+        coursesPanel.setLayout(new BorderLayout()); 
         coursesPanel.setPreferredSize(new Dimension(200, getHeight()));
         coursesPanel.setBackground(new Color(200, 255, 200));
-    
+        
+        
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+        topPanel.setBackground(new Color(92, 64, 51) );
+        
         JLabel coursesLabel = new JLabel("COURSES");
-        coursesLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        coursesLabel.setFont(new Font("Chalkboard", Font.PLAIN, 35));
+        coursesLabel.setForeground(new Color(241, 241, 220));
         coursesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        coursesPanel.add(coursesLabel);
-    
+        topPanel.add(coursesLabel);
+        
         JButton addCourseButton = new JButton("+ Add Courses");
         addCourseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         addCourseButton.addActionListener(e -> addNewCourse());
-        coursesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        coursesPanel.add(addCourseButton);
+        topPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        topPanel.add(addCourseButton);
+        
+        coursesPanel.add(topPanel, BorderLayout.NORTH);
     
-        // Add Save button
+        // Middle section for the course list
+        courseListPanel = new JPanel();
+        courseListPanel.setLayout(new BoxLayout(courseListPanel, BoxLayout.Y_AXIS));
+        courseListPanel.setBackground(new Color(92, 64, 51));
+        coursesPanel.add(new JScrollPane(courseListPanel), BorderLayout.CENTER);
+    
+        // Bottom section for Save and Load buttons
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+        bottomPanel.setBackground(new Color(92, 64, 51));
+        
         JButton saveButton = new JButton("Save Data");
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         saveButton.addActionListener(e -> saveData());
-        coursesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        coursesPanel.add(saveButton);
-    
-        // Add Load button
+        bottomPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        bottomPanel.add(saveButton);
+        
         JButton loadButton = new JButton("Load Data");
         loadButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         loadButton.addActionListener(e -> loadData());
-        coursesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        coursesPanel.add(loadButton);
-    
-        // Initialize panel to hold course buttons
-        courseListPanel = new JPanel();
-        courseListPanel.setLayout(new BoxLayout(courseListPanel, BoxLayout.Y_AXIS));
-        courseListPanel.setBackground(new Color(200, 255, 200));
-        coursesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        coursesPanel.add(courseListPanel);
+        bottomPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        bottomPanel.add(loadButton);
+        
+        coursesPanel.add(bottomPanel, BorderLayout.SOUTH); 
     }
     
     // EFFECTS: Sets up the main display panel in the center of the frame with a welcome message
     //          and adds the circular progress bar component to the right side of the display panel.
     private void setupMainDisplayPanel() {
         mainDisplayPanel = new JPanel();
-        mainDisplayPanel.setBackground(new Color(100, 180, 100));
+        mainDisplayPanel.setBackground(new Color(62, 39, 35));
         mainDisplayPanel.setLayout(new BorderLayout());
+        setSize(1200, 700); 
+        setResizable(false);
 
-        JLabel welcomeMessage = new JLabel("Welcome to StudyTrack!", SwingConstants.CENTER);
-        welcomeMessage.setFont(new Font("Serif", Font.BOLD, 24));
-        mainDisplayPanel.add(welcomeMessage, BorderLayout.CENTER);
+
+        // Load the image
+        ImageIcon imageIcon = new ImageIcon("src/main/images/animedeskwmessage.png"); 
+        JLabel imageLabel = new JLabel(imageIcon);
+        Image img = imageIcon.getImage(); 
+        Image scaledImg = img.getScaledInstance(1000, 700, Image.SCALE_SMOOTH); 
+        ImageIcon scaledIcon = new ImageIcon(scaledImg);
+        imageLabel.setIcon(scaledIcon); 
+
+        mainDisplayPanel.add(imageLabel, BorderLayout.CENTER);
+
 
         // Add the circular progress bar
         progressBar = new CircularProgressBar();
@@ -144,20 +166,29 @@ public class StudyTrackGUI extends JFrame {
     //          progress message.
     private void setupCourseHeader(String courseName) {
         JLabel courseLabel = new JLabel(courseName, SwingConstants.CENTER);
-        courseLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        courseLabel.setFont(new Font("Chalkboard", Font.PLAIN, 20));
+        courseLabel.setForeground(new Color(241, 241, 220));
+
         mainDisplayPanel.add(courseLabel, BorderLayout.NORTH);
     
         JLabel progressMessage = new JLabel("Track Your Progress", SwingConstants.CENTER);
-        progressMessage.setFont(new Font("Serif", Font.ITALIC, 16));
+        progressMessage.setFont(new Font("Chalkboard", Font.PLAIN, 16));
         mainDisplayPanel.add(progressMessage, BorderLayout.CENTER);
     }
     
     // EFFECTS: Initializes the topics panel, configures its layout, and adds any existing topics
     //          associated with the given course to the panel.
     private void setupTopicsPanel(String courseName) {
-        topicsPanel = new JPanel();
+        topicsPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon imageIcon = new ImageIcon("src/main/images/topicpanelbg.png");
+                Image img = imageIcon.getImage();
+                g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
         topicsPanel.setLayout(new BoxLayout(topicsPanel, BoxLayout.Y_AXIS));
-        topicsPanel.setBackground(new Color(180, 220, 180));
     
         List<Topic> topics = courseTopicsMap.get(courseName);
         if (topics != null) {
@@ -167,6 +198,7 @@ public class StudyTrackGUI extends JFrame {
         }
     }
     
+    
    // EFFECTS: Adds an "Add Topic" button to the main display panel that, when clicked,
     //          prompts the user to add a new topic with lesson objectives.
     private void addAddTopicButton(String courseName) {
@@ -175,42 +207,16 @@ public class StudyTrackGUI extends JFrame {
         mainDisplayPanel.add(addTopicButton, BorderLayout.SOUTH);
     }
     
-    // EFFECTS: Prompts the user to input a new topic name. If valid, prompts for lesson objectives,
-    //          adds the new topic to the course, and updates the GUI with the new topic.
+    // EFFECTS: Prompts the user to input a new topic name. If valid, adds the new topic to the course.
     private void promptForNewTopic(String courseName) {
         String topicName = JOptionPane.showInputDialog(this, "Enter topic name:");
         if (topicName != null && !topicName.trim().isEmpty()) {
             Topic newTopic = new Topic(topicName);
-            int objectiveCount = getObjectiveCount();
-            if (objectiveCount > 0) {
-                addLessonObjectives(newTopic, objectiveCount);
-                addNewTopicToCourse(courseName, newTopic);
-            }
+            addNewTopicToCourse(courseName, newTopic); // Just add the topic without lesson objectives
         }
     }
+
     
-    // EFFECTS: Prompts the user to input the number of lesson objectives. Returns the parsed number
-    //          if valid; otherwise, returns 0 and displays an error message.
-    private int getObjectiveCount() {
-        String objectivesCountStr = JOptionPane.showInputDialog(this, "How many lesson objectives?");
-        try {
-            return Integer.parseInt(objectivesCountStr);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid number.");
-            return 0;
-        }
-    }
-    
-    // EFFECTS: Prompts the user to input lesson objectives for the specified topic. If valid,
-    //          adds each objective to the topic.
-    private void addLessonObjectives(Topic newTopic, int objectiveCount) {
-        for (int i = 1; i <= objectiveCount; i++) {
-            String objective = JOptionPane.showInputDialog(this, "Enter objective " + i + ":");
-            if (objective != null && !objective.trim().isEmpty()) {
-                newTopic.addLessonObjective(objective);
-            }
-        }
-    }
     
     // EFFECTS: Adds the specified topic to the course, updates the topics panel and the overall
     //          course confidence level.
@@ -226,31 +232,77 @@ public class StudyTrackGUI extends JFrame {
     // EFFECTS: Adds a visual representation of the given topic to the topics panel, including
     //          a button to view its lesson objectives.
     private void addTopicToPanel(Topic topic, String courseName) {
+        // Create a panel for the topic "card"
         JPanel topicPanel = new JPanel();
-        topicPanel.setBackground(new Color(240, 255, 240));
+        topicPanel.setBackground(new Color(245, 245, 220)); 
         topicPanel.setLayout(new BoxLayout(topicPanel, BoxLayout.Y_AXIS));
         topicPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+        topicPanel.setPreferredSize(new Dimension(400, 80)); 
+        topicPanel.setMaximumSize(new Dimension(400, 80)); 
+        topicPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
+    
+        // Add a label for the topic name and confidence level
         JLabel topicLabel = new JLabel(topic.getName() + " - Confidence: " + topic.getConfidenceLevel() + "%");
-        topicLabel.setFont(new Font("Serif", Font.BOLD, 14));
+        topicLabel.setFont(new Font("Chalkboard", Font.PLAIN, 14));
+        topicLabel.setForeground(new Color(60, 40, 30)); 
         topicPanel.add(topicLabel);
-
+    
+        // Add a button to view lesson objectives
         JButton viewObjectivesButton = new JButton("View Lesson Objectives");
+        viewObjectivesButton.setFont(new Font("Chalkboard", Font.PLAIN, 12)); 
         viewObjectivesButton.addActionListener(e -> openLessonObjectivesDialog(topic, topicLabel, courseName));
         topicPanel.add(viewObjectivesButton);
-
+    
+        // Add the topic panel to the topicsPanel
+        topicsPanel.add(Box.createRigidArea(new Dimension(0, 10))); 
         topicsPanel.add(topicPanel);
         topicsPanel.revalidate();
         topicsPanel.repaint();
     }
     
+    
     // EFFECTS: Opens a dialog window displaying the lesson objectives for the specified topic.
-    //          Allows users to mark objectives as mastered or unmastered, updating the topic's
-    //          confidence level.
+    //          Allows users to dynamically add lesson objectives and mark them as mastered/unmastered.
     private void openLessonObjectivesDialog(Topic topic, JLabel topicLabel, String courseName) {
         JDialog objectivesDialog = new JDialog(this, "Lesson Objectives - " + topic.getName(), true);
         objectivesDialog.setSize(400, 300);
         objectivesDialog.setLayout(new BoxLayout(objectivesDialog.getContentPane(), BoxLayout.Y_AXIS));
+
+        // Panel to hold all lesson objectives
+        JPanel objectivesPanel = new JPanel();
+        objectivesPanel.setLayout(new BoxLayout(objectivesPanel, BoxLayout.Y_AXIS));
+
+        // Display existing objectives
+        updateObjectivesList(topic, objectivesPanel, topicLabel, courseName);
+
+        // Button to add new lesson objectives
+        JButton addObjectiveButton = new JButton("+ Add Lesson Objective");
+        addObjectiveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        addObjectiveButton.addActionListener(e -> {
+            String newObjective = JOptionPane.showInputDialog(objectivesDialog, "Enter lesson objective:");
+            if (newObjective != null && !newObjective.trim().isEmpty()) {
+                topic.addLessonObjective(newObjective);
+                topic.updateConfidenceLevel(); 
+                updateObjectivesList(topic, objectivesPanel, topicLabel, courseName);
+            }
+        });
+
+        // Add components to the dialog
+        objectivesDialog.add(new JScrollPane(objectivesPanel)); 
+        objectivesDialog.add(addObjectiveButton);
+
+        JButton closeButton = new JButton("Close");
+        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        closeButton.addActionListener(e -> objectivesDialog.dispose());
+        objectivesDialog.add(closeButton);
+
+        objectivesDialog.setLocationRelativeTo(this);
+        objectivesDialog.setVisible(true);
+    }
+
+    // Helper method to refresh the objectives list
+    private void updateObjectivesList(Topic topic, JPanel objectivesPanel, JLabel topicLabel, String courseName) {
+        objectivesPanel.removeAll(); // Clear existing list
 
         for (LessonObjective objective : topic.getLessonObjectives()) {
             JCheckBox objectiveCheckbox = new JCheckBox(objective.getDescription());
@@ -263,19 +315,15 @@ public class StudyTrackGUI extends JFrame {
                 }
                 topic.updateConfidenceLevel();
                 topicLabel.setText(topic.getName() + " - Confidence: " + topic.getConfidenceLevel() + "%");
-                updateCourseConfidence(courseName);  
+                updateCourseConfidence(courseName);
             });
-            objectivesDialog.add(objectiveCheckbox);
+            objectivesPanel.add(objectiveCheckbox);
         }
 
-        JButton closeButton = new JButton("Close");
-        closeButton.addActionListener(e -> objectivesDialog.dispose());
-        objectivesDialog.add(closeButton);
-
-        objectivesDialog.setLocationRelativeTo(this);
-        objectivesDialog.setVisible(true);
+        objectivesPanel.revalidate();
+        objectivesPanel.repaint();
     }
-    
+
     // EFFECTS: Calculates the average confidence level for all topics in the specified course
     //          and updates the circular progress bar with the new value.
     private void updateCourseConfidence(String courseName) {
@@ -363,6 +411,4 @@ public class StudyTrackGUI extends JFrame {
         courseListPanel.revalidate();
         courseListPanel.repaint();
     }
-
-
 }
