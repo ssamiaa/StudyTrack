@@ -13,12 +13,23 @@ The application is designed primarily for students who want to stay organized an
 This project is interesting to me because it addresses a common problem students face: managing and organizing their study progress. By creating StudyTrack, I aim to help students prioritize their study time efficiently, track their improvement, and ultimately perform better in their exams. Moreover, it provides me with an opportunity to design a functional application that tackles real-world challenges, allowing me to apply my Java skills in an impactful way.
 
 ### Features:
-- **Add Courses**: Users can create and manage multiple courses.
-- **Add Topics**: For each course, users can list topics, assign multiple lesson objectives, and update their progress by marking objectives as mastered.
-- **Track Progress**: Confidence levels for each topic are tracked based on how many objectives the user has mastered, showing progress as a percentage (e.g., 4 out of 5 objectives = 80% confident).
-- **View Overview**: Users can view an easy-to-read progress report of all topics within a course and see how many objectives they’ve mastered.
-- **Edit Course/Topic:** Users can update course or topic information as needed, including modifying lesson objectives and progress.
-- **Remove Courses/Topics**: Users can remove a course or topic if they no longer need it, keeping their tracker organized.
+**Course Management:** 
+- Add courses with unique names.
+- View a list of all created courses.
+**Topic Management:**
+- Add topics to specific courses.
+- View all topics associated with a selected course.
+**Lesson Objective Tracking:**
+- Define lesson objectives for each topic.
+- Mark lesson objectives as mastered.
+- Automatically update the confidence level for topics and courses.
+**Progress Visualization:**
+- A circular progress bar visualizes the overall course confidence level.
+- Confidence is calculated based on the number of mastered lesson objectives.
+**Data Persistence:**
+- Save and load course, topic, and lesson objective data to/from a JSON file.
+**Event Logging:**
+- Every action (e.g., adding courses, topics, lesson objectives, or marking objectives as mastered) is logged with a timestamp for reference.
 
 ### User Stories:
 - As a user, I want to be able to add a new course to my list of courses so that I can begin tracking my progress for that course.
@@ -33,21 +44,50 @@ This project is interesting to me because it addresses a common problem students
 
 
 ### Instructions for End User
+**1. Adding a New Course**
+- Click the + Add Courses button.
+- Enter the course name (e.g., Biology or Math).
+- Click OK to add the course.
+**2. Adding Topics to a Course**
+- Select a course from the list.
+- Click the + Add Topic button in the course details view.
+- Enter the topic name (e.g., Cells or Linear Equations).
+- Click OK to add the topic.
+**3. Adding Lesson Objectives to a Topic** *(Addtional Required Action)*
+- Select a topic from the course details view.
+- Click the View Lesson Objectives button.
+- In the dialog that appears, click + Add Lesson Objective.
+- Enter the lesson objective (e.g., Define the cell theory or Solve equations with one variable).
+- Click OK to add the lesson objective.
+**4. Marking Lesson Objectives as Mastered** *(Addtional Required Action)*
+- Open the lesson objectives dialog for a topic.
+- Check the box next to a lesson objective to mark it as mastered.
+- The confidence level of the topic and course will update automatically.
+**5. Viewing Progress** *(Visual Component)*
+- The circular progress bar in the course details view shows the average confidence level across all topics in the course.
+**6. Saving and Loading Data**
+- Use the Save Data button to save progress to a JSON file.
+- Use the Load Data button to reload previously saved progress.
 
-**How to add a Topic to a Course:**
-- To add a new topic to a course, first select the course from the list on the left side panel by clicking on its name. Then, in the main display area, click the button labeled "+ Add Topic". You will be prompted to enter a topic name, followed by the option to specify lesson objectives for that topic.
+## **Phase 4: Task 2 - Event Logging**
+### **Overview**
+Event logging has been implemented in the application to track significant actions within the model. Key events such as adding a course, adding topics to a course, and marking lesson objectives as mastered are logged with timestamps. This provides a detailed record of user interactions, making it easier to debug and analyze application behavior.
 
-**First Required Action (View Lesson Objectives for a Topic):**
-- After adding topics, you can view and interact with each topic's lesson objectives by clicking the "View Lesson Objectives" button below the topic name. A new window will open, displaying a checklist of lesson objectives for that topic, allowing you to mark each objective as mastered by selecting the checkbox next to it.
+### **Logged Events**
+1. **Course Added:** Logs the addition of a new course.
+2. **Topic Added:** Logs the addition of a topic to a course.
+3. **Lesson Objective Added:** Logs the addition of a lesson objective to a topic.
+4. **Objective Mastered:** Logs when a lesson objective is marked as mastered.
+5. **Data Persistence:** Logs when data is saved to or loaded from a file.
 
-**Second Required Action (Track Overall Course Confidence):**
-- Each course’s overall confidence level is visually represented by a circular progress bar located in the main display area. The progress bar updates automatically as you mark lesson objectives as mastered within each topic, giving you a real-time view of your confidence level across all topics in the course.
-
-**Location of the Visual Component:**
-- The circular progress bar, located on the right side of the main display area, is the visual component representing the course’s overall confidence. It dynamically updates to reflect the average confidence percentage across all topics in the selected course.
-
-**How to Save the State of the Application to File:**
-- To save your current progress, click on the "Save Data" button located in the left side panel under the list of courses. This will save all courses, topics, and lesson objectives to a file, allowing you to load this progress later.
-
-**How to Load the State of the Application from File:**
-- To load previously saved data, click on the "Load Data" button located in the left side panel under the list of courses. This will retrieve all saved courses, topics, and lesson objectives from the file, restoring them to the application so you can continue from where you left off.
+### **Example Logged Events**
+Tue Nov 26 19:07:09 PST 2024
+Added course 'Biology' to the system.
+Tue Nov 26 19:07:13 PST 2024
+Added topic 'Cells' to course 'Biology'.
+Tue Nov 26 19:07:17 PST 2024
+Added lesson objective 'Define the cell theory.' to topic 'Cells'.
+Tue Nov 26 19:08:41 PST 2024
+Marked objective 'Define the cell theory.' as mastered.
+Tue Nov 26 19:08:49 PST 2024
+Saved data to ./data/studyTrack.json.

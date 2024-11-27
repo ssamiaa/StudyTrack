@@ -45,7 +45,8 @@ public class Topic implements Writable {
         LessonObjective objective = new LessonObjective(objectiveDescription);
         lessonObjectives.add(objective);
         updateConfidenceLevel();
-    
+        EventLog.getInstance().logEvent(
+            new Event("Added lesson objective '" + objectiveDescription + "' to topic '" + name + "'."));
     }
 
     /**
@@ -57,7 +58,10 @@ public class Topic implements Writable {
     public void markObjectiveAsMastered(int index) {
         lessonObjectives.get(index).markAsMastered();
         updateConfidenceLevel();
-    
+        EventLog.getInstance().logEvent(
+            new Event("Marked objective '" 
+                + lessonObjectives.get(index).getDescription() 
+                    + "' as mastered in topic '" + name + "'."));
     }
 
     /**

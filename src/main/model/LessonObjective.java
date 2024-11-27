@@ -39,7 +39,10 @@ public class LessonObjective implements Writable {
      * 
     */
     public void markAsMastered() {
-        this.isMastered = true;
+        if (!isMastered) { 
+            this.isMastered = true;
+            EventLog.getInstance().logEvent(new Event("Marked objective '" + description + "' as mastered."));
+        }
     }
 
     /* 

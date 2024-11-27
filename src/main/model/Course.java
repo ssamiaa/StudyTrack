@@ -36,6 +36,7 @@ public class Course implements Writable {
     public void addTopic(String topicName) {
         Topic topic = new Topic(topicName);
         topics.add(topic);
+        EventLog.getInstance().logEvent(new Event("Added topic '" + topicName + "' to course '" + name + "'."));
     }
 
     // Removes a topic from the course.
@@ -46,6 +47,8 @@ public class Course implements Writable {
         for (int i = 0; i < topics.size(); i++) {
             if (topics.get(i).getName().equalsIgnoreCase(topicName)) {
                 topics.remove(i);
+                EventLog.getInstance().logEvent(
+                    new Event("Removed topic '" + topicName + "' from course '" + name + "'."));
                 i--; 
             }
         }
@@ -58,6 +61,7 @@ public class Course implements Writable {
      */
     public void addTopicObject(Topic topic) {
         topics.add(topic);
+        EventLog.getInstance().logEvent(new Event("Added topic '" + topic.getName() + "' to course '" + name + "'."));
     }
         
     // Returns the list of topics in the course.

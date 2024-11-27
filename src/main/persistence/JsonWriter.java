@@ -4,6 +4,7 @@ import model.Course;
 import org.json.JSONArray;
 import java.io.*;
 import java.util.List;
+
 public class JsonWriter {
     private PrintWriter writer;
     private String destination;

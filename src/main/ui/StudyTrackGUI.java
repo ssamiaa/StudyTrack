@@ -4,6 +4,7 @@ import model.Topic;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 import model.Course;
+import model.CourseManager;
 import model.LessonObjective;
 import javax.swing.*;
 import java.awt.*;
@@ -12,20 +13,23 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import model.Event;
+import model.EventLog;
+
 
 public class StudyTrackGUI extends JFrame {
     private JPanel coursesPanel;
     private JPanel mainDisplayPanel;
     private JPanel courseListPanel;
     private JPanel topicsPanel;
-    private CircularProgressBar progressBar;  
+    private CircularProgressBar progressBar;
+    private CourseManager courseManager;  
 
     private List<String> courses;  
-    private Map<String, List<Topic>> courseTopicsMap;  
 
     private static final String DATA_FILE = "./data/studyTrack.json";
     
@@ -35,7 +39,7 @@ public class StudyTrackGUI extends JFrame {
         super("StudyTrack - Course Progress Tracker");
 
         courses = new ArrayList<>();
-        courseTopicsMap = new HashMap<>();
+        courseManager = new CourseManager();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -48,6 +52,25 @@ public class StudyTrackGUI extends JFrame {
         add(mainDisplayPanel, BorderLayout.CENTER);
 
         setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                printEventLog();
+            }
+        });
+    }
+
+    /**
+     * EFFECTS: Prints all events logged in the EventLog to the console.
+     *          Each event is printed on a new line, including the date
+     *          and description.
+     */
+    private void printEventLog() {
+        System.out.println("Event Log:");
+        for (Event event : EventLog.getInstance()) {
+            System.out.println(event.toString());
+        }
     }
     
     // EFFECTS: Sets up the courses panel on the left side of the frame,
@@ -62,7 +85,7 @@ public class StudyTrackGUI extends JFrame {
         
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-        topPanel.setBackground(new Color(92, 64, 51) );
+        topPanel.setBackground(new Color(92, 64, 51));
         
         JLabel coursesLabel = new JLabel("COURSES");
         coursesLabel.setFont(new Font("Chalkboard", Font.PLAIN, 35));
@@ -132,22 +155,27 @@ public class StudyTrackGUI extends JFrame {
         progressBar = new CircularProgressBar();
         mainDisplayPanel.add(progressBar, BorderLayout.EAST);
     }
-    
-    // EFFECTS: Prompts the user to input a course name. If valid, adds the course name to the
-    //          list of courses and creates a button for the course in the course list panel.
+ 
+
+    // EFFECTS: Prompts the user to input a course name and adds the course via CourseManager.
+    //          Updates the GUI and logs the event if the course is successfully added.
     private void addNewCourse() {
         String courseName = JOptionPane.showInputDialog(this, "Enter course name:");
         if (courseName != null && !courseName.trim().isEmpty()) {
-            courses.add(courseName);
-            courseTopicsMap.put(courseName, new ArrayList<>());  
-
-            JButton courseButton = new JButton(courseName);
-            courseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            courseButton.addActionListener(new CourseButtonListener(courseName));
-            courseListPanel.add(courseButton);
-            courseListPanel.revalidate();
+            boolean added = courseManager.addCourse(courseName);
+            if (added) {
+                JButton courseButton = new JButton(courseName);
+                courseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                courseButton.addActionListener(new CourseButtonListener(courseName));
+                courseListPanel.add(courseButton);
+                courseListPanel.revalidate();
+                courseListPanel.repaint();
+            } else {
+                JOptionPane.showMessageDialog(this, "Course '" + courseName + "' already exists.");
+            }
         }
     }
+
 
     // EFFECTS: Clears the main display panel, sets up the course header and topics panel,
     //          adds the circular progress bar, and a button to add topics, then repaints the panel.
@@ -179,28 +207,6 @@ public class StudyTrackGUI extends JFrame {
         mainDisplayPanel.add(progressMessage, BorderLayout.CENTER);
     }
     
-    // EFFECTS: Initializes the topics panel, configures its layout, and adds any existing topics
-    //          associated with the given course to the panel.
-    private void setupTopicsPanel(String courseName) {
-        topicsPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                ImageIcon imageIcon = new ImageIcon("src/main/images/topicpanelbg.png");
-                Image img = imageIcon.getImage();
-                g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-        topicsPanel.setLayout(new BoxLayout(topicsPanel, BoxLayout.Y_AXIS));
-    
-        List<Topic> topics = courseTopicsMap.get(courseName);
-        if (topics != null) {
-            for (Topic topic : topics) {
-                addTopicToPanel(topic, courseName);
-            }
-        }
-    }
-    
     
    // EFFECTS: Adds an "Add Topic" button to the main display panel that, when clicked,
     //          prompts the user to add a new topic with lesson objectives.
@@ -210,27 +216,31 @@ public class StudyTrackGUI extends JFrame {
         mainDisplayPanel.add(addTopicButton, BorderLayout.SOUTH);
     }
     
-    // EFFECTS: Prompts the user to input a new topic name. If valid, adds the new topic to the course.
+
+    // EFFECTS: Prompts the user to input a new topic name. 
+    //If valid, adds the new topic to the course via CourseManager.
     private void promptForNewTopic(String courseName) {
         String topicName = JOptionPane.showInputDialog(this, "Enter topic name:");
         if (topicName != null && !topicName.trim().isEmpty()) {
-            Topic newTopic = new Topic(topicName);
-            addNewTopicToCourse(courseName, newTopic); // Just add the topic without lesson objectives
+            Course course = courseManager.getCourse(courseName);
+            if (course != null) {
+                course.addTopic(topicName); // Add the topic to the course and log the event
+                updateTopicsPanel(courseName); // Refresh the topics panel
+            } else {
+                JOptionPane.showMessageDialog(this, "Course '" + courseName + "' not found.");
+            }
         }
+    }
+    
+
+    // EFFECTS: Updates the topics panel to reflect the current list of topics in the given course.
+    private void updateTopicsPanel(String courseName) {
+        setupTopicsPanel(courseName);
+        mainDisplayPanel.revalidate();
+        mainDisplayPanel.repaint();
     }
 
-    
-    
-    // EFFECTS: Adds the specified topic to the course, updates the topics panel and the overall
-    //          course confidence level.
-    private void addNewTopicToCourse(String courseName, Topic newTopic) {
-        List<Topic> courseTopics = courseTopicsMap.get(courseName);
-        if (courseTopics != null) {
-            courseTopics.add(newTopic);
-            addTopicToPanel(newTopic, courseName);
-            updateCourseConfidence(courseName);
-        }
-    }
+
     
     // EFFECTS: Adds a visual representation of the given topic to the topics panel, including
     //          a button to view its lesson objectives.
@@ -262,8 +272,40 @@ public class StudyTrackGUI extends JFrame {
         topicsPanel.revalidate();
         topicsPanel.repaint();
     }
+
+    // EFFECTS: Initializes the topics panel, configures its layout, and adds any existing topics
+    //          associated with the given course to the panel.
+    private void setupTopicsPanel(String courseName) {
+        topicsPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon imageIcon = new ImageIcon("src/main/images/topicpanelbg.png");
+                Image img = imageIcon.getImage();
+                g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        topicsPanel.setLayout(new BoxLayout(topicsPanel, BoxLayout.Y_AXIS));
+    
+        Course course = courseManager.getCourse(courseName);
+        if (course != null) {
+            for (Topic topic : course.getTopics()) {
+                addTopicToPanel(topic, courseName);
+            }
+        }
+    
+        // Clear the center panel and add the topicsPanel, progress bar, and Add Topic button
+        mainDisplayPanel.removeAll(); // Clear any previous content
+        mainDisplayPanel.add(new JScrollPane(topicsPanel), BorderLayout.CENTER);
+        mainDisplayPanel.add(progressBar, BorderLayout.EAST); // Re-add the progress bar
+        addAddTopicButton(courseName); // Re-add the "Add Topic" button
+        mainDisplayPanel.revalidate();
+        mainDisplayPanel.repaint();
+    }
     
     
+    // EFFECTS: Opens a dialog window displaying the lesson objectives for the specified topic.
+    //          Allows users to dynamically add lesson objectives and mark them as mastered/unmastered.
     // EFFECTS: Opens a dialog window displaying the lesson objectives for the specified topic.
     //          Allows users to dynamically add lesson objectives and mark them as mastered/unmastered.
     private void openLessonObjectivesDialog(Topic topic, JLabel topicLabel, String courseName) {
@@ -271,37 +313,52 @@ public class StudyTrackGUI extends JFrame {
         objectivesDialog.setSize(400, 300);
         objectivesDialog.setLayout(new BoxLayout(objectivesDialog.getContentPane(), BoxLayout.Y_AXIS));
 
-        // Panel to hold all lesson objectives
+        JPanel objectivesPanel = createObjectivesPanel(topic, topicLabel, courseName, objectivesDialog);
+        objectivesDialog.add(new JScrollPane(objectivesPanel)); 
+
+        JButton addObjectiveButton = createAddObjectiveButton(
+                    topic, objectivesPanel, topicLabel, courseName, objectivesDialog);
+        objectivesDialog.add(addObjectiveButton);
+
+        JButton closeButton = createCloseButton(objectivesDialog);
+        objectivesDialog.add(closeButton);
+
+        objectivesDialog.setLocationRelativeTo(this);
+        objectivesDialog.setVisible(true);
+    }
+
+    // Helper method: Creates the objectives panel
+    private JPanel createObjectivesPanel(Topic topic, JLabel topicLabel, String courseName, JDialog dialog) {
         JPanel objectivesPanel = new JPanel();
         objectivesPanel.setLayout(new BoxLayout(objectivesPanel, BoxLayout.Y_AXIS));
-
-        // Display existing objectives
         updateObjectivesList(topic, objectivesPanel, topicLabel, courseName);
+        return objectivesPanel;
+    }
 
-        // Button to add new lesson objectives
-        JButton addObjectiveButton = new JButton("+ Add Lesson Objective");
-        addObjectiveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        addObjectiveButton.addActionListener(e -> {
-            String newObjective = JOptionPane.showInputDialog(objectivesDialog, "Enter lesson objective:");
+    // Helper method: Creates the "Add Objective" button
+    private JButton createAddObjectiveButton(
+            Topic topic, JPanel objectivesPanel, JLabel topicLabel, String courseName, JDialog dialog) {
+        JButton button = new JButton("+ Add Lesson Objective");
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.addActionListener(e -> {
+            String newObjective = JOptionPane.showInputDialog(dialog, "Enter lesson objective:");
             if (newObjective != null && !newObjective.trim().isEmpty()) {
                 topic.addLessonObjective(newObjective);
                 topic.updateConfidenceLevel(); 
                 updateObjectivesList(topic, objectivesPanel, topicLabel, courseName);
             }
         });
-
-        // Add components to the dialog
-        objectivesDialog.add(new JScrollPane(objectivesPanel)); 
-        objectivesDialog.add(addObjectiveButton);
-
-        JButton closeButton = new JButton("Close");
-        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        closeButton.addActionListener(e -> objectivesDialog.dispose());
-        objectivesDialog.add(closeButton);
-
-        objectivesDialog.setLocationRelativeTo(this);
-        objectivesDialog.setVisible(true);
+        return button;
     }
+
+    // Helper method: Creates the "Close" button
+    private JButton createCloseButton(JDialog dialog) {
+        JButton button = new JButton("Close");
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.addActionListener(e -> dialog.dispose());
+        return button;
+    }
+
 
     // Helper method to refresh the objectives list
     private void updateObjectivesList(Topic topic, JPanel objectivesPanel, JLabel topicLabel, String courseName) {
@@ -330,19 +387,16 @@ public class StudyTrackGUI extends JFrame {
     // EFFECTS: Calculates the average confidence level for all topics in the specified course
     //          and updates the circular progress bar with the new value.
     private void updateCourseConfidence(String courseName) {
-        List<Topic> topics = courseTopicsMap.get(courseName);
-        if (topics == null || topics.isEmpty()) {
+        Course course = courseManager.getCourse(courseName);
+        if (course == null || course.getTopics().isEmpty()) {
             progressBar.setProgress(0);
             return;
         }
-
-        int totalConfidence = 0;
-        for (Topic topic : topics) {
-            totalConfidence += topic.getConfidenceLevel();
-        }
-        int averageConfidence = totalConfidence / topics.size();
-        progressBar.setProgress(averageConfidence);
+    
+        double averageConfidence = course.getOverallProgress();
+        progressBar.setProgress((int) averageConfidence);
     }
+    
 
     private class CourseButtonListener implements ActionListener {
         private String courseName;
@@ -363,15 +417,8 @@ public class StudyTrackGUI extends JFrame {
         JsonWriter writer = new JsonWriter(DATA_FILE);
         try {
             writer.open();
-            writer.write(new ArrayList<>(courseTopicsMap.keySet().stream()
-                    .map(courseName -> {
-                        List<Topic> topics = courseTopicsMap.get(courseName);
-                        Course course = new Course(courseName);
-                        for (Topic topic : topics) {
-                            course.addTopicObject(topic);
-                        }
-                        return course;
-                    })
+            writer.write(new ArrayList<>(courseManager.getCourseNames().stream()
+                    .map(courseName -> courseManager.getCourse(courseName))
                     .collect(Collectors.toList())));
             writer.close();
             JOptionPane.showMessageDialog(this, "Data saved successfully!");
@@ -380,26 +427,27 @@ public class StudyTrackGUI extends JFrame {
         }
     }
     
-    // EFFECTS: Loads course data from a JSON file, repopulating the courses and courseTopicsMap
+    
+    // EFFECTS: Loads course data from a JSON file, repopulating the courses with course manager
     //          with previously saved data. Refreshes the GUI with the loaded courses.
     private void loadData() {
         JsonReader reader = new JsonReader(DATA_FILE);
         try {
-            List<Course> loadedCourses = reader.read(); 
-            courses.clear();
-            courseTopicsMap.clear();
-
+            List<Course> loadedCourses = reader.read();
+            courseManager = new CourseManager(); // Reset CourseManager
             for (Course course : loadedCourses) {
-                courses.add(course.getName());
-                courseTopicsMap.put(course.getName(), course.getTopics());
+                courseManager.addCourse(course.getName());
+                for (Topic topic : course.getTopics()) {
+                    courseManager.getCourse(course.getName()).addTopicObject(topic);
+                }
             }
-
+            refreshCourseListPanel();
             JOptionPane.showMessageDialog(this, "Data loaded successfully!");
-            refreshCourseListPanel();  
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Unable to load data: " + e.getMessage());
         }
     }
+    
 
     // EFFECTS: Clears and repopulates the course list panel with buttons for each course in the
     //          courses list. Refreshes the panel to show the updated list.
