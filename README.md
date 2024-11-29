@@ -114,3 +114,11 @@ Tue Nov 26 19:07:13 PST 2024 Added topic 'Cells' to course 'Biology'.
 Tue Nov 26 19:07:17 PST 2024 Added lesson objective 'Define the cell theory.' to topic 'Cells'.
 Tue Nov 26 19:08:41 PST 2024 Marked objective 'Define the cell theory.' as mastered.
 Tue Nov 26 19:08:49 PST 2024 Saved data to ./data/studyTrack.json.
+```
+---
+## Phase 4: Task 3
+Reflecting on the design in the UML diagram, one major area for improvement is the StudyTrackGUI class. Currently, it handles too many responsibilities, including managing the UI layout, handling user interactions, and triggering updates to the data model. This violates the Single Responsibility Principle and makes the class harder to maintain or extend. If I had more time, I would refactor this class by introducing helper classes to manage specific parts of the GUI, such as a CoursePanelManager for handling course-related UI components and a TopicPanelManager for managing topics and objectives. This would make the code more modular and easier to work with.
+
+In addition, the Course and Topic classes could be further refined. For example, Topic currently calculates its confidence level based on lesson objectives. While this works, the confidence calculation logic could be extracted into a separate utility class or service, making it easier to test and reuse if more advanced progress-tracking logic is needed in the future. Similarly, the Course class could be refactored to include a method that directly returns a summary of progress across its topics, rather than relying on external code to aggregate this information.
+
+These changes would improve the maintainability, readability, and scalability of the program, ensuring that future enhancements or bug fixes can be implemented more efficiently.
