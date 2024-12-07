@@ -85,19 +85,19 @@ Moreover, it provides me with an opportunity to design a functional application 
 - Enter the topic name (e.g., Cells or Linear Equations).
 - Click **OK** to add the topic.
 
-## 3. Adding Lesson Objectives to a Topic *(Additional Required Action)*
+## 3. Adding Lesson Objectives to a Topic 
 - Select a topic from the course details view.
 - Click the **View Lesson Objectives** button.
 - In the dialog that appears, click **+ Add Lesson Objective**.
 - Enter the lesson objective (e.g., Define the cell theory or Solve equations with one variable).
 - Click **OK** to add the lesson objective.
 
-## 4. Marking Lesson Objectives as Mastered *(Additional Required Action)*
+## 4. Marking Lesson Objectives as Mastered 
 - Open the lesson objectives dialog for a topic.
 - Check the box next to a lesson objective to mark it as mastered.
 - The confidence level of the topic and course will update automatically.
 
-### 5. Viewing Progress *(Visual Component)*
+### 5. Viewing Progress 
 - The circular progress bar in the course details view shows the average confidence level across all topics in the course.
 
 ### 6. Saving and Loading Data
