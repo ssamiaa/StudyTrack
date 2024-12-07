@@ -1,5 +1,3 @@
-# My Personal Project
-
 ## StudyTrack - Course Progress Tracker
 
 **StudyTrack** is a course progress tracking application designed to help students manage their coursework efficiently. The app allows users to create courses, add topics or lectures, and track their confidence levels for each topic. For each topic, users can add any number of lesson objectives and mark which ones they are confident in. Confidence levels for each topic will be automatically calculated based on the percentage of objectives the user has mastered. By providing a clear, consolidated view of their progress, users can quickly identify areas where they need to focus more effort before exams. Future features will include setting milestones, goals, and smart suggestions for study prioritization.
@@ -116,7 +114,7 @@ Tue Nov 26 19:08:41 PST 2024 Marked objective 'Define the cell theory.' as maste
 Tue Nov 26 19:08:49 PST 2024 Saved data to ./data/studyTrack.json.
 ```
 ---
-## Phase 4: Task 3
+## Future Improvements
 Reflecting on the design in the UML diagram, one major area for improvement is the StudyTrackGUI class. Currently, it handles too many responsibilities, including managing the UI layout, handling user interactions, and triggering updates to the data model. This violates the Single Responsibility Principle and makes the class harder to maintain or extend. If I had more time, I would refactor this class by introducing helper classes to manage specific parts of the GUI, such as a CoursePanelManager for handling course-related UI components and a TopicPanelManager for managing topics and objectives. This would make the code more modular and easier to work with.
 
 In addition, the Course and Topic classes could be further refined. For example, Topic currently calculates its confidence level based on lesson objectives. While this works, the confidence calculation logic could be extracted into a separate utility class or service, making it easier to test and reuse if more advanced progress-tracking logic is needed in the future. Similarly, the Course class could be refactored to include a method that directly returns a summary of progress across its topics, rather than relying on external code to aggregate this information.
