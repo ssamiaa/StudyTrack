@@ -1,6 +1,7 @@
 ## StudyTrack - Course Progress Tracker
 
 **StudyTrack** is a course progress tracking application designed to help students manage their coursework efficiently. The app allows users to create courses, add topics or lectures, and track their confidence levels for each topic. For each topic, users can add any number of lesson objectives and mark which ones they are confident in. Confidence levels for each topic will be automatically calculated based on the percentage of objectives the user has mastered. By providing a clear, consolidated view of their progress, users can quickly identify areas where they need to focus more effort before exams. Future features will include setting milestones, goals, and smart suggestions for study prioritization.
+<img width="1045" alt="Screenshot 2025-01-22 at 4 33 54 PM" src="https://github.com/user-attachments/assets/0282193e-1e4e-4381-a2a0-98575f5b51d5" />
 
 ---
 
